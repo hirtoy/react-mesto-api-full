@@ -1,0 +1,15 @@
+.figure {
+	border-radius: 0;
+	border: none;
+	background-color: transparent;
+	width: 75vw;
+	max-height: 299px;
+	position: relative;
+}
+
+@media screen and (min-width: 767px) {
+	.figure {
+		max-width: 816px;
+		max-height: 540px;
+	}
+}
