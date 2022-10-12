@@ -1,0 +1,12 @@
+.popup__submit-button_place_elements {
+	width: 200px;
+	height: 40px;
+}
+
+@media screen and (min-width: 768px) {
+	.popup__submit-button_place_elements {
+		width: 358px;
+		height: 50.15px;
+
+	}
+}
