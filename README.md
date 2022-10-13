@@ -4,3 +4,4 @@
 Ссылки на проект:
 backend https//localhost:3000
 frontend https//localhost:3001
+Публичный IP адрес сервера 51.250.92.21

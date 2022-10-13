@@ -9,13 +9,15 @@ const routerUser = require('./routes/users');
 const routerCards = require('./routes/cards');
 const NotFoundError = require('./error/not-found-errors');
 const { handleError } = require('./utils/handleError');
+const { requestLogger, errorLogger } = require('./middelewares/Logger');
+const errorHandler = require('./middelewares/error-handler');
 
-const { PORT = 3000 } = process.env;
+const { PORT = 2000 } = process.env;
 
 const app = express();
 
 app.use(cors({
-  origin: '*',
+  origin: ['https://api.hirtoy.nomoreparties.icu', 'http://hirtoy.nomoreparties.icu'],
   credentials: true,
 }));
 
@@ -37,7 +39,11 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 
 app.use(routerUser);
 app.use(routerCards);
+
 app.use(errors());
+app.use(errorLogger);
+app.use(requestLogger);
+app.use(errorHandler);
 
 app.all('/*', () => {
   throw new NotFoundError('Неверный запрос');
