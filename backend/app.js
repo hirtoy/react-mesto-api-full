@@ -12,7 +12,7 @@ const { handleError } = require('./utils/handleError');
 const { requestLogger, errorLogger } = require('./middelewares/Logger');
 const errorHandler = require('./middelewares/error-handler');
 
-const { PORT = 2000 } = process.env;
+const { PORT = 3000 } = process.env;
 
 const app = express();
 
