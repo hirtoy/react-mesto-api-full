@@ -1,4 +1,4 @@
-export const BASE_URL = 'https://api.hirtoy.nomoredomains.icu';
+export const BASE_URL = 'https://localhost:3000';
 
 const checkResponse = (res) =>
 res.ok ? res.json() : Promise.reject(`Ошибка: ${res.status}`);

@@ -39,8 +39,7 @@ function App() {
 
   React.useEffect(() => {
     handleTokenCheck()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [handleTokenCheck]);
 
 
   const closeAllPopups = () => {
@@ -100,6 +99,7 @@ function App() {
       .catch(console.error)
   }
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   function handleTokenCheck() {
     const token = localStorage.getItem('jwt');
     if (token) {

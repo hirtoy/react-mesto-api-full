@@ -16,10 +16,7 @@ class mestoApi {
         return fetch(
             `${this._url}/users/me`, {
             method: 'GET',
-            headers: {
-                authorization: `Bearer ${localStorage.getItem('jwt')}`,
-                'Content-Type': 'application/json'
-              }
+            headers: this._headers
         }
         )
             .then(this._checkResponse);
@@ -30,10 +27,7 @@ class mestoApi {
         return fetch(
             `${this._url}/users/me`, {
             method: 'PATCH',
-            headers: {
-                authorization: `Bearer ${localStorage.getItem('jwt')}`,
-                'Content-Type': 'application/json'
-              },
+            headers: this._headers,
             body: JSON.stringify({
                 name: name,
                 about: about
@@ -48,10 +42,7 @@ class mestoApi {
         return fetch(
             `${this._url}/users/me/avatar`, {
             method: 'PATCH',
-            headers: {
-                authorization: `Bearer ${localStorage.getItem('jwt')}`,
-                'Content-Type': 'application/json'
-              },
+            headers: this._headers,
             body: JSON.stringify({
                 avatar: link
             })
@@ -66,10 +57,7 @@ class mestoApi {
         return fetch(
             `${this._url}/cards`, {
             method: 'GET',
-            headers: {
-                authorization: `Bearer ${localStorage.getItem('jwt')}`,
-                'Content-Type': 'application/json'
-              }
+            headers: this._headers
         }
         )
             .then(res => this._checkResponse(res));
@@ -80,10 +68,7 @@ class mestoApi {
         return fetch(
             `${this._url}/cards`, {
             method: 'POST',
-            headers: {
-                authorization: `Bearer ${localStorage.getItem('jwt')}`,
-                'Content-Type': 'application/json'
-              },
+            headers: this._headers,
             body: JSON.stringify({
                 name: name,
                 link: link
@@ -96,10 +81,7 @@ class mestoApi {
     like(_id) {
         return fetch(`${this._url}/cards/likes/${_id}`, {
             method: 'PUT',
-            headers: {
-                authorization: `Bearer ${localStorage.getItem('jwt')}`,
-                'Content-Type': 'application/json'
-              }
+            headers: this._headers
         })
             .then(res => this._checkResponse(res));
     }
@@ -107,10 +89,7 @@ class mestoApi {
     dislike(_id) {
         return fetch(`${this._url}/cards/likes/${_id}`, {
             method: 'DELETE',
-            headers: {
-                authorization: `Bearer ${localStorage.getItem('jwt')}`,
-                'Content-Type': 'application/json'
-              }
+            headers: this._headers
         })
             .then(res => this._checkResponse(res));
     }
@@ -120,10 +99,7 @@ class mestoApi {
         return fetch(
             `${this._url}/cards/${_id}`, {
             method: 'DELETE',
-            headers: {
-                authorization: `Bearer ${localStorage.getItem('jwt')}`,
-                'Content-Type': 'application/json'
-              }
+            headers: this._headers
         }
         )
             .then(res => this._checkResponse(res));
@@ -144,10 +120,7 @@ class mestoApi {
             `${this._url}/cards/likes/${_id}`,
             {
                 method: 'PUT',
-                headers: {
-                    authorization: `Bearer ${localStorage.getItem('jwt')}`,
-                    'Content-Type': 'application/json'
-                  }
+                headers: this._headers
             }
         )
             .then(res => this._checkResponse(res));
@@ -159,10 +132,7 @@ class mestoApi {
             `${this._url}/cards/likes/${_id}`,
             {
                 method: 'DELETE',
-                headers: {
-                    authorization: `Bearer ${localStorage.getItem('jwt')}`,
-                    'Content-Type': 'application/json'
-                  }
+                headers: this._headers
             }
         )
             .then(res => this._checkResponse(res));
@@ -170,9 +140,9 @@ class mestoApi {
 }
 
 const Api = new mestoApi({
-    baseUrl: "https://api.hirtoy.nomoredomains.icu",
+    baseUrl: "https://localhost:3000",
     headers: {
-        // authorization: "497373c8-3f58-4b67-8592-c177fbd661e3",
+        authorization: "497373c8-3f58-4b67-8592-c177fbd661e3",
         "Content-Type": "application/json",
     },
 });
