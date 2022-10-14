@@ -116,7 +116,7 @@ function App() {
     if (token) {
       Api.checkToken(token)
         .then((data) => {
-            setCurrentUser(data);
+          setCurrentUser(data);
           console.log(data);
         })
         .catch((err) => {
@@ -128,6 +128,7 @@ function App() {
   function handleRegister({ email, password }) {
     Auth.register(email, password)
       .then((res) => {
+        console.log(res);
         if (res.data) {
           setIsRegistered(true);
           handleInfoTolltipOpen(true);
