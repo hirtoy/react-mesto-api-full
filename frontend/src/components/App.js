@@ -118,10 +118,10 @@ function App() {
       .then((res) => {
         if (res.data) {
           setIsRegistered(true);
-        handleInfoTolltipOpen(true);
+          handleInfoTolltipOpen(true);
         } else {
           setIsRegistered(false);
-        handleInfoTolltipOpen(true);
+          handleInfoTolltipOpen(true);
         }
       });
   }
