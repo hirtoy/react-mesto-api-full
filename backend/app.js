@@ -10,12 +10,13 @@ const { login, createUsers } = require('./controllers/users');
 const NotFoundError = require('./error/not-found-errors');
 const { requestLogger, errorLogger } = require('./middelewares/Logger');
 const errorHandler = require('./middelewares/error-handler');
+const cors = require('./middelewares/cors');
 
 const { PORT = 3000 } = process.env;
 
 const app = express();
 
-app.use(require('./middelewares/cors'));
+app.use(cors);
 
 app.use(cookieParser());
 
