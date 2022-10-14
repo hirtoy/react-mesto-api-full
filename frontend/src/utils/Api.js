@@ -16,7 +16,8 @@ class mestoApi {
         return fetch(
             `${this._url}/users/me`, {
             method: 'GET',
-            headers: this._headers
+            headers: this._headers,
+            credentials: 'include',
         }
         )
             .then(this._checkResponse);
@@ -28,6 +29,7 @@ class mestoApi {
             `${this._url}/users/me`, {
             method: 'PATCH',
             headers: this._headers,
+            credentials: 'include',
             body: JSON.stringify({
                 name: name,
                 about: about
@@ -43,6 +45,7 @@ class mestoApi {
             `${this._url}/users/me/avatar`, {
             method: 'PATCH',
             headers: this._headers,
+            credentials: 'include',
             body: JSON.stringify({
                 avatar: link
             })
@@ -57,7 +60,8 @@ class mestoApi {
         return fetch(
             `${this._url}/cards`, {
             method: 'GET',
-            headers: this._headers
+            headers: this._headers,
+            credentials: 'include',
         }
         )
             .then(res => this._checkResponse(res));
@@ -69,6 +73,7 @@ class mestoApi {
             `${this._url}/cards`, {
             method: 'POST',
             headers: this._headers,
+            credentials: 'include',
             body: JSON.stringify({
                 name: name,
                 link: link
@@ -81,7 +86,8 @@ class mestoApi {
     like(_id) {
         return fetch(`${this._url}/cards/likes/${_id}`, {
             method: 'PUT',
-            headers: this._headers
+            headers: this._headers,
+            credentials: 'include',
         })
             .then(res => this._checkResponse(res));
     }
@@ -89,7 +95,8 @@ class mestoApi {
     dislike(_id) {
         return fetch(`${this._url}/cards/likes/${_id}`, {
             method: 'DELETE',
-            headers: this._headers
+            headers: this._headers,
+            credentials: 'include',
         })
             .then(res => this._checkResponse(res));
     }
@@ -99,7 +106,8 @@ class mestoApi {
         return fetch(
             `${this._url}/cards/${_id}`, {
             method: 'DELETE',
-            headers: this._headers
+            headers: this._headers,
+            credentials: 'include',
         }
         )
             .then(res => this._checkResponse(res));
@@ -120,7 +128,8 @@ class mestoApi {
             `${this._url}/cards/likes/${_id}`,
             {
                 method: 'PUT',
-                headers: this._headers
+                headers: this._headers,
+                credentials: 'include',
             }
         )
             .then(res => this._checkResponse(res));
@@ -132,7 +141,8 @@ class mestoApi {
             `${this._url}/cards/likes/${_id}`,
             {
                 method: 'DELETE',
-                headers: this._headers
+                headers: this._headers,
+                credentials: 'include',
             }
         )
             .then(res => this._checkResponse(res));
@@ -142,7 +152,7 @@ class mestoApi {
 const Api = new mestoApi({
     baseUrl: "https://api.hirtoy.nomoredomains.icu",
     headers: {
-        authorization: "497373c8-3f58-4b67-8592-c177fbd661e3",
+        // authorization: "497373c8-3f58-4b67-8592-c177fbd661e3",
         "Content-Type": "application/json",
     },
 });

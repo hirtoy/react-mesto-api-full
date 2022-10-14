@@ -10,6 +10,7 @@ export function register(email, password) {
             Accept: "application/json",
             'Content-Type': 'application/json'
         },
+        credentials: 'include',
         body: JSON.stringify({email, password})
     })
     .then(checkResponse)
@@ -22,6 +23,7 @@ export function authorize(email, password) {
             Accept: "application/json",
             'Content-Type': 'application/json'
         },
+        credentials: 'include',
         body: JSON.stringify({email, password})
     })
     .then(checkResponse)
@@ -35,9 +37,22 @@ export function checkToken(token) {
             headers: {
                 Accept: "application/json",
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`,
-            }
+                // 'Authorization': `Bearer ${token}`,
+            },
+            credentials: 'include',
         }
     )
     .then(checkResponse)
-}
+};
+
+export function signout(){
+    return fetch(`${BASE_URL}/signout`, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      credentials: 'include',
+    })
+    .then(checkResponse)
+};
