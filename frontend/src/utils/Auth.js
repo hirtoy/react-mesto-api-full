@@ -1,4 +1,4 @@
-export const BASE_URL = 'https://api.hirtoy.nomoredomains.icu';
+export const BASE_URL = 'https://api.chirick.nomoredomains.icu';
 
 const checkResponse = (res) =>
 res.ok ? res.json() : Promise.reject(`Ошибка: ${res.status}`);
@@ -44,14 +44,3 @@ export function checkToken(token) {
     )
     .then(checkResponse)
 };
-// export function signout(){
-//     return fetch(`${BASE_URL}/signout`, {
-//       method: 'GET',
-//       headers: {
-//         'Accept': 'application/json',
-//         'Content-Type': 'application/json'
-//       },
-//       credentials: 'include',
-//     })
-//     .then(checkResponse)
-// };

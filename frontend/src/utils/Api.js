@@ -150,7 +150,7 @@ class mestoApi {
 }
 
 const Api = new mestoApi({
-    baseUrl: "https://api.hirtoy.nomoredomains.icu",
+    baseUrl: "https://api.chirick.nomoredomains.icu",
     headers: {
         // authorization: "497373c8-3f58-4b67-8592-c177fbd661e3",
         "Content-Type": "application/json",

@@ -1,8 +1,8 @@
 const allowedCors = [
-  'https://hirtoy.nomoredomains.icu',
-  'http://hirtoy.nomoredomains.icu',
-  'http://api.hirtoy.nomoredomains.icu',
-  'https://api.hirtoy.nomoredomains.icu',
+  'https://chirick.nomoredomains.icu',
+  'http://chirick.nomoredomains.icu',
+  'http://api.chirick.nomoredomains.icu',
+  'https://api.chirick.nomoredomains.icu',
 ];
 
 const cors = (req, res, next) => {
