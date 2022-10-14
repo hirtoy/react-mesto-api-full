@@ -1,5 +1,4 @@
 const allowedCors = [
-  'https://api.hirtoy.nomoredomains.icu',
   'https://hirtoy.nomoredomains.icu',
   'http://hirtoy.nomoredomains.icu',
   'localhost:3000',
