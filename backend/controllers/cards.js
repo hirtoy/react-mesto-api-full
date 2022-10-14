@@ -39,12 +39,11 @@ module.exports.delCard = (req, res, next) => {
   Card.findById(cardId)
     .then((card) => {
       if (!card) { throw new NotFoundError('Карточка не найдена'); }
-      // eslint-disable-next-line eqeqeq
-      if (card.owner != req.user._id) { throw new ForbiddenError('Вы не можете удалить чужую карточку'); }
+      if (!card.owner.equals(req.user._id)) { throw new ForbiddenError('Вы не можете удалить чужую карточку'); }
       return card.remove();
     })
     .then(() => {
-      res.status(STATUS_OK).send({ message: `Карточка ${cardId} не кореектна` });
+      res.status(STATUS_OK).send({ message: `Карточка ${cardId} удалена` });
     })
     .catch((err) => {
       if (err.name === 'CastError') {

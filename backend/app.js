@@ -8,7 +8,6 @@ const bodyParser = require('body-parser');
 const routerUser = require('./routes/users');
 const routerCards = require('./routes/cards');
 const NotFoundError = require('./error/not-found-errors');
-const { handleError } = require('./utils/handleError');
 const { requestLogger, errorLogger } = require('./middelewares/Logger');
 const errorHandler = require('./middelewares/error-handler');
 
@@ -37,17 +36,18 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
 });
 
+app.use(requestLogger);
+
 app.use(routerUser);
 app.use(routerCards);
 
 app.use(errors());
 app.use(errorLogger);
-app.use(requestLogger);
+
 app.use(errorHandler);
 
 app.all('/*', () => {
   throw new NotFoundError('Неверный запрос');
 });
-app.use(handleError);
 
 app.listen(PORT);
