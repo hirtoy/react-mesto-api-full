@@ -7,6 +7,7 @@ const { errors } = require('celebrate');
 const bodyParser = require('body-parser');
 const routerUser = require('./routes/users');
 const routerCards = require('./routes/cards');
+const { login, createUsers } = require('./controllers/users');
 const NotFoundError = require('./error/not-found-errors');
 const { requestLogger, errorLogger } = require('./middelewares/Logger');
 const errorHandler = require('./middelewares/error-handler');
@@ -38,8 +39,11 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 
 app.use(requestLogger);
 
-app.use(routerUser);
-app.use(routerCards);
+app.use('/', routerUser);
+app.use('/', routerCards);
+
+app.post('/signin', login);
+app.post('/signup', createUsers);
 
 app.use(errors());
 app.use(errorLogger);
@@ -47,7 +51,7 @@ app.use(errorLogger);
 app.use(errorHandler);
 
 app.all('/*', () => {
-  throw new NotFoundError('Неверный запрос');
+  throw new NotFoundError('К сожалению, запращиваемый ресурс не найден');
 });
 
 app.listen(PORT);
