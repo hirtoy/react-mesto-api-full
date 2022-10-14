@@ -140,7 +140,7 @@ class mestoApi {
 }
 
 const Api = new mestoApi({
-    baseUrl: "https://localhost:3002",
+    baseUrl: "https://api.hirtoy.nomoredomains.icu",
     headers: {
         authorization: "497373c8-3f58-4b67-8592-c177fbd661e3",
         "Content-Type": "application/json",
