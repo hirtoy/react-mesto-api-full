@@ -3,6 +3,7 @@ const BadRequestError = require('../error/bad-request-errors');
 // eslint-disable-next-line import/no-unresolved
 const ForbiddenError = require('../error/forbidden-errors');
 const NotFoundError = require('../error/not-found-errors');
+const InternalServerError = require('../error/internal-server-errors');
 
 const {
   STATUS_CREATED, STATUS_OK,
@@ -11,8 +12,8 @@ const {
 // отображение карточек на странице
 module.exports.getAllCards = (req, res, next) => {
   Card.find({})
-    .then((cards) => res.status(STATUS_OK).send(cards))
-    .catch(next);
+    .then((cards) => res.status(STATUS_OK).send({ data: cards }))
+    .catch(() => next(new InternalServerError('Ошибка сервера!')));
 };
 
 // создание карточки
@@ -21,7 +22,7 @@ module.exports.createCard = (req, res, next) => {
   const { name, link } = req.body;
 
   Card.create({ name, link, owner })
-    .then((cards) => res.status(STATUS_CREATED).send({ data: cards }))
+    .then((card) => res.status(STATUS_CREATED).send({ data: card }))
     .catch((error) => {
       if (error.name === 'ValidationError') {
         // eslint-disable-next-line new-cap
@@ -42,8 +43,8 @@ module.exports.delCard = (req, res, next) => {
       if (!card.owner.equals(req.user._id)) { throw new ForbiddenError('Вы не можете удалить чужую карточку'); }
       return card.remove();
     })
-    .then(() => {
-      res.status(STATUS_OK).send({ message: `Карточка ${cardId} удалена` });
+    .then((card) => {
+      res.status(STATUS_OK).send({ data: card, message: `Карточка ${cardId} удалена` });
     })
     .catch((err) => {
       if (err.name === 'CastError') {

@@ -22,8 +22,8 @@ module.exports.getUserInfo = (req, res, next) => {
 
 module.exports.getAllUsers = (req, res, next) => {
   User.find({})
-    .then((user) => {
-      res.status(STATUS_OK).send({ data: user });
+    .then((users) => {
+      res.status(STATUS_OK).send({ data: users });
     })
     .catch(next);
 };
@@ -80,7 +80,7 @@ module.exports.login = (req, res, next) => {
   return User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', { expiresIn: '7d' });
-      res.status(STATUS_OK).cookie('authorization', token, { maxAge: 3600000 * 24 * 7, httpOnly: true }).send({ message: 'Авторизация прошла успешно!' });
+      res.status(STATUS_OK).cookie('authorization', token, { maxAge: 3600000 * 24 * 7, httpOnly: true }).send({ data: token, message: 'Авторизация прошла успешно!' });
     })
     .catch(next);
 };
