@@ -113,16 +113,16 @@ function App() {
     };
   }
 
-  function handleRegister(email, password) {
+  function handleRegister({ email, password }) {
     Auth.register(email, password)
       .then((res) => {
-        setIsRegistered(!res.error);
-
-      })
-      .catch(err => {
-        console.log(err);
-        setIsRegistered(false);
+        if (res.data) {
+          setIsRegistered(true);
         handleInfoTolltipOpen(true);
+        } else {
+          setIsRegistered(false);
+        handleInfoTolltipOpen(true);
+        }
       });
   }
 
