@@ -39,6 +39,10 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 
 app.use(requestLogger);
 
+app.all('/*', (req, res, next) => {
+  next(new NotFoundError('К сожалению, запращиваемый ресурс не найден'));
+});
+
 app.use('/', routerUser);
 app.use('/', routerCards);
 
@@ -49,9 +53,5 @@ app.use(errors());
 app.use(errorLogger);
 
 app.use(errorHandler);
-
-app.all('/*', () => {
-  throw new NotFoundError('К сожалению, запращиваемый ресурс не найден');
-});
 
 app.listen(PORT);
