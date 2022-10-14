@@ -26,6 +26,8 @@ function Register({ onRegister }) {
                     placeholder="Email"
                     onChange={handlMailChange}
                     value={email}
+                    minLength="6"
+                    maxLength="20"
                 />
                 <input
                     id="password"
@@ -36,6 +38,8 @@ function Register({ onRegister }) {
                     placeholder="Пароль"
                     onChange={handlPasswordChange}
                     value={password}
+                    minLength="6"
+                    maxLength="20"
                 />
                 <button
                     className="entrance__button"
@@ -45,7 +49,7 @@ function Register({ onRegister }) {
             </form>
             <p className="entrance__text">
                 Уже зарегистрированы?
-                <Link to="sign-in" className="entrance__link"> Войти</Link>
+                <Link to="/sign-in" className="entrance__link"> Войти</Link>
             </p>
         </div>
     );
