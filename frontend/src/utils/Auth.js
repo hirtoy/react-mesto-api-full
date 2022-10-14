@@ -7,26 +7,33 @@ export function register(email, password) {
     return fetch(`${BASE_URL}/signup`, {
         method: 'POST',
         headers: {
-            Accept: "application/json",
             'Content-Type': 'application/json'
         },
-        credentials: 'include',
         body: JSON.stringify({email, password})
     })
     .then(checkResponse)
+    .catch((err) => {
+        console.log(err)
+      })
 };
 
 export function authorize(email, password) {
     return fetch(`${BASE_URL}/signin`, {
         method: 'POST',
         headers: {
-            Accept: "application/json",
             'Content-Type': 'application/json'
         },
-        credentials: 'include',
         body: JSON.stringify({email, password})
     })
-    .then(checkResponse)
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.token) {
+        console.log(data.token);
+        localStorage.setItem("token", data.token);
+        return data.token;
+      }
+    })
+    .catch((err) => console.log(err));
 };
 
 export function checkToken(token) {
