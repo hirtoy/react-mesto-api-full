@@ -16,10 +16,7 @@ const { PORT = 3000 } = process.env;
 
 const app = express();
 
-app.use(cors({
-  origin: ['https://api.hirtoy.nomoreparties.icu', 'http://hirtoy.nomoreparties.icu'],
-  credentials: true,
-}));
+app.use(cors);
 
 app.use(cookieParser());
 
