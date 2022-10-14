@@ -100,18 +100,19 @@ function App() {
   }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  function handleTokenCheck() {
-    const token = localStorage.getItem('jwt');
+  React.useEffect(() => {
+    const token = localStorage.getItem("token");
     if (token) {
-      Auth.checkToken(token)
-        .then((res) => {
-          if (res) {
-            handleLogin(res.data.email);
-          }
+      Api.checkToken(token)
+        .then((data) => {
+            setCurrentUser(data);
+          console.log(data);
         })
-        .catch(console.error)
-    };
-  }
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, [isLoggedIn]);
 
   function handleRegister({ email, password }) {
     Auth.register(email, password)
@@ -144,18 +145,8 @@ function App() {
     localStorage.removeItem('jwt');
   }
 
-  function handleLogin(email) {
-    setEmail(email);
+  function handleLogin() {
     setLoggedIn(true);
-    history.push('/main')
-    Promise.all([Api.getProfile(), Api.getInitialCards()])
-      .then(([profile, cards]) => {
-        //отображаем информацию профиля    
-        setCurrentUser(profile);
-        //рисуем все карточки
-        setCards(cards);
-      })
-      .catch(console.error)
   }
 
 
@@ -189,7 +180,7 @@ function App() {
         </Route>
 
         <Route exact path="/">
-          {isLoggedIn ? <Redirect to="/main" /> : <Redirect to="/sign-in" />}
+          {handleLogin ? <Redirect to="/" /> : <Redirect to="/sign-in" />}
         </Route>
 
       </Switch>
