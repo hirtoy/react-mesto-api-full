@@ -128,7 +128,6 @@ function App() {
   function handleRegister({ email, password }) {
     Auth.register(email, password)
       .then((res) => {
-        console.log(res);
         if (res) {
           setIsRegistered(true);
           handleInfoTolltipOpen(true);
