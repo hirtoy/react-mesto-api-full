@@ -129,7 +129,7 @@ function App() {
     Auth.register(email, password)
       .then((res) => {
         console.log(res);
-        if (res.data) {
+        if (res) {
           setIsRegistered(true);
           handleInfoTolltipOpen(true);
         } else {
