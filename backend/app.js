@@ -1,10 +1,10 @@
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
+const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const { errors } = require('celebrate');
 const bodyParser = require('body-parser');
-const cors = require('./middelewares/cors');
 const routerUser = require('./routes/users');
 const routerCards = require('./routes/cards');
 const { login, createUsers } = require('./controllers/users');
@@ -16,7 +16,15 @@ const { PORT = 3000 } = process.env;
 
 const app = express();
 
-app.use(cors);
+app.use(
+  cors({
+    origin: [
+      'https://hirtoy.nomoredomains.icu',
+      'http://hirtoy.nomoredomains.icu',
+    ],
+    credentials: true,
+  }),
+);
 
 app.use(cookieParser());
 
