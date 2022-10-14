@@ -10,7 +10,7 @@ function Register({ onRegister }) {
 
     function handleSubmit(event) {
         event.preventDefault();
-        onRegister(email, password);
+        onRegister({ email, password });
     }
 
     return (
@@ -18,6 +18,7 @@ function Register({ onRegister }) {
             <h2 className="entrance__heading">Регистрация</h2>
             <form action="" className="form" onSubmit={handleSubmit}>
                 <input
+                    id="email"
                     name="email"
                     className="form__input"
                     required
@@ -27,6 +28,7 @@ function Register({ onRegister }) {
                     value={email}
                 />
                 <input
+                    id="password"
                     name="password"
                     className="form__input"
                     required
