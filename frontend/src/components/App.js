@@ -38,8 +38,19 @@ function App() {
   const history = useHistory();
 
   React.useEffect(() => {
-    handleTokenCheck()
-  }, [handleTokenCheck]);
+    const token = localStorage.getItem("token");
+    if (token) {
+      Auth.checkToken(token).then((data) => {
+        if (data) {
+          setEmail(data.email);
+          setLoggedIn(true);
+          history.push("/");
+        } else {
+          console.log("error");
+        }
+      });
+    }
+  }, [history, isLoggedIn]);
 
 
   const closeAllPopups = () => {
@@ -127,22 +138,39 @@ function App() {
       });
   }
 
-  function handleAuthorize(email, password) {
+  function handleAuthorize({ email, password }) {
     Auth.authorize(email, password)
-      .then((data) => {
-        if (data.token) {
-          localStorage.setItem('jwt', data.token);
-          handleLogin(email);
+      .then((res) => {
+        if (res) {
+          setLoggedIn(true);
+          setEmail(email);
           history.push("/");
+        } else {
+          setIsRegistered(false);
+          setIsInfoTooltipOpen(true);
         }
       })
-      .catch(console.error)
   }
+
+  React.useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      Api
+        .getInitialCards(token)
+        .then((data) => {
+          console.log("cards", data);
+          setCards(data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, [setLoggedIn]);
 
   function handleSignOut() {
     setCards([]);
     setEmail('');
-    localStorage.removeItem('jwt');
+    localStorage.removeItem("token");
   }
 
   function handleLogin() {
