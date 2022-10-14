@@ -10,6 +10,7 @@ const NotFoundError = require('./error/not-found-errors');
 const { requestLogger, errorLogger } = require('./middelewares/Logger');
 const errorHandler = require('./middelewares/error-handler');
 const cors = require('./middelewares/cors');
+const auth = require('./middelewares/auth');
 
 const { PORT = 3000 } = process.env;
 
@@ -35,8 +36,8 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 
 app.use(requestLogger);
 
-app.all('/*', (req, res, next) => {
-  next(new NotFoundError('К сожалению, запращиваемый ресурс не найден'));
+app.all('/*', auth, () => {
+  throw new NotFoundError('К сожалению, запращиваемый ресурс не найден');
 });
 
 app.use('/', routerUser);
