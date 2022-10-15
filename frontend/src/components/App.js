@@ -114,8 +114,8 @@ function App() {
     });
 }
 
-  function handleAddPlaceSubmit(card) {
-    Api.createNewCard(card.name, card.link)
+  function handleAddPlaceSubmit({ name, link }) {
+    Api.createNewCard(name, link)
       .then((newCard) => {
         console.log(newCard);
         setCards([newCard, ...cards]);
