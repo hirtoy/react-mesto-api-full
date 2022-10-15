@@ -1,10 +1,12 @@
+/* eslint-disable import/no-unresolved */
+/* eslint-disable @typescript-eslint/no-var-requires */
 const Card = require('../models/card');
 
 const { CREATED_CODE } = require('../utils/constants');
 
-const BadRequestError = require('../utils/error/bad-request-error');
-const ForbiddenError = require('../utils/error/forbidden-error');
-const NotFoundError = require('../utils/error/not-found-error');
+const BadRequestError = require('../errors/bad-request-error');
+const ForbiddenError = require('../errors/forbidden-error');
+const NotFoundError = require('../errors/not-found-error');
 
 const getCards = async (req, res, next) => {
   try {

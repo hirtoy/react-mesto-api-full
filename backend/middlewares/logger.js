@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const winston = require('winston');
 const expressWinston = require('express-winston');
 

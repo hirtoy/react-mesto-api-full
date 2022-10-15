@@ -1,8 +1,8 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
-const UnauthorizedError = require('../utils/errors/unauthorized-error');
-const { regex } = require('../utils/constants');
+const UnauthorizedError = require('../errors/unauthorized-error');
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -24,7 +24,6 @@ const userSchema = new mongoose.Schema({
     required: true,
     default:
       'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
-    match: regex,
   },
   email: {
     type: String,
@@ -35,7 +34,7 @@ const userSchema = new mongoose.Schema({
         return /(:?(?:https?:\/\/)?(?:www\.)?)?[-a-z0-9]+\.\w/gi.test(v);
       },
       message: (props) => `${props.value} неверный адрес`,
-      },
+    },
   },
   password: {
     type: String,

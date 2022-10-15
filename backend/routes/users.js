@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const express = require('express');
 const { celebrate, Joi } = require('celebrate');
 
@@ -9,7 +10,6 @@ const {
   updateUserAvatar,
   getUserInfo,
 } = require('../controllers/users');
-const { regex } = require('../helpers/constants');
 
 userRoutes.get('/', getUsers);
 
@@ -42,7 +42,7 @@ userRoutes.patch(
     body: Joi.object().keys({
       avatar: Joi.string()
         .required()
-        .pattern(regex),
+        .regex(/^https?:\/\/(www.){0,1}([0-9a-zA-Z_-]+\.){1,3}[a-zA-Z]+[A-Za-z0-9-._~:/?#[\]@!$&'()*+,;=]+#?$/m),
     }),
   }),
   updateUserAvatar,

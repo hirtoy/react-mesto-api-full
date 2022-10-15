@@ -14,5 +14,4 @@ module.exports = {
   NOT_FOUND_CODE,
   CONFLICT_CODE,
   INTERNAL_SERVER_ERROR_CODE,
-  regex,
 };

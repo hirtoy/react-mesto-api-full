@@ -1,15 +1,15 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
+const { errors, celebrate, Joi } = require('celebrate');
 const cors = require('./middlewares/cors');
 const auth = require('./middlewares/auth');
-const { errors, celebrate, Joi } = require('celebrate');
 const { createUser, login, signOut } = require('./controllers/users');
 const { routes } = require('./routes');
-const { regex } = require('./helpers/constants');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
-const NotFoundError = require('./helpers/errors/not-found-error');
+const NotFoundError = require('./errors/not-found-error');
 
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -53,7 +53,7 @@ app.post(
       password: Joi.string().required(),
       name: Joi.string().min(2).max(30),
       about: Joi.string().min(2).max(30),
-      avatar: Joi.string().pattern(regex),
+      avatar: Joi.string().regex(/^https?:\/\/(www.){0,1}([0-9a-zA-Z_-]+\.){1,3}[a-zA-Z]+[A-Za-z0-9-._~:/?#[\]@!$&'()*+,;=]+#?$/m),
     }),
   }),
   login,
@@ -67,7 +67,7 @@ app.post(
       password: Joi.string().required(),
       name: Joi.string().min(2).max(30),
       about: Joi.string().min(2).max(30),
-      avatar: Joi.string().pattern(regex),
+      avatar: Joi.string().regex(/^https?:\/\/(www.){0,1}([0-9a-zA-Z_-]+\.){1,3}[a-zA-Z]+[A-Za-z0-9-._~:/?#[\]@!$&'()*+,;=]+#?$/m),
     }),
   }),
   createUser,

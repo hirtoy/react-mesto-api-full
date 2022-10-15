@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
@@ -40,10 +41,14 @@ const getUsers = async (req, res, next) => {
 };
 
 const createUser = async (req, res, next) => {
-  const { name,about,avatar,email,password } = req.body;
+  const {
+    name, about, avatar, email, password,
+  } = req.body;
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await User.create({ name,about,avatar,email,password: hashedPassword });
+    const user = await User.create({
+      name, about, avatar, email, password: hashedPassword,
+    });
     res.status(CREATED_CODE).send({
       data: user.toJSON(),
     });

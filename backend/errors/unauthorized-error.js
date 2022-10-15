@@ -1,4 +1,5 @@
-const { UNAUTHORIZED_CODE } = require('../constants');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { UNAUTHORIZED_CODE } = require('../utils/constants');
 
 class UnauthorizedError extends Error {
   constructor(message) {
