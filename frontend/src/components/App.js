@@ -44,13 +44,43 @@ function App() {
         if (data) {
           setEmail(data.email);
           setLoggedIn(true);
-          history.push("/");
+          history.push("/main");
         } else {
           console.log("error");
         }
       });
     }
   }, [history, isLoggedIn]);
+
+  React.useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      Api
+        .getUserInfoApi(token)
+        .then((data) => {
+          setCurrentUser(data);
+          console.log(data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, [isLoggedIn]);
+
+  React.useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      Api
+        .getInitialCards(token)
+        .then((data) => {
+          console.log("cards", data);
+          setCards(data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, [isLoggedIn]);
 
 
   const closeAllPopups = () => {
@@ -61,24 +91,28 @@ function App() {
     setSelectedCard(null);
   }
 
-  function handleUpdateUser(user) {
-    Api.patchProfile(user.name, user.about)
-      .then((res) => {
-        setCurrentUser(res);
-        closeAllPopups();
-      })
-      .catch(console.error)
-
-  }
+  function handleUpdateUser({ name, about }) {
+    Api.patchProfile(name, about)
+    .then((data) => {
+      setCurrentUser(data.data);
+      console.log(data);
+      closeAllPopups();
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}
 
   function handleUpdateAvatar(avatarUrl) {
     Api.patchProfilePhoto(avatarUrl)
-      .then((res) => {
-        setCurrentUser(res);
-        closeAllPopups();
-      })
-      .catch(console.error)
-  }
+    .then((data) => {
+      setCurrentUser(data.data);
+      closeAllPopups();
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}
 
   function handleAddPlaceSubmit(card) {
     Api.createNewCard(card.name, card.link)
@@ -107,7 +141,9 @@ function App() {
         console.log(res)
         setCards((prevState) => prevState.filter((c) => c._id !== card._id && c));
       })
-      .catch(console.error)
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -140,9 +176,9 @@ function App() {
   }
 
   function handleSignOut() {
-    setCards([]);
-    setEmail('');
-    localStorage.removeItem('token');
+    localStorage.removeItem("token");
+    setLoggedIn(false);
+    history.push("/sign-in");
   }
 
   // function handleLogin(email) {
