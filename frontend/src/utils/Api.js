@@ -1,6 +1,7 @@
 class mestoApi {
-    constructor(params) {
-        this._url = params.baseUrl;
+    constructor(options) {
+        this._url = options.baseURL;
+        this._headers = options.headers;
     }
 
     _checkResponse(res) {
@@ -11,52 +12,31 @@ class mestoApi {
     }
 
     //загрузка данных профиля
-    getProfile(token) {
+    getProfile() {
         return fetch(
             `${this._url}/users/me`, {
-            method: 'GET',
-            headers: {
-                "Content-Type": "application/json",
-                authorization: `Bearer ${token}`
-              },
-        }
-        )
-            .then(this._checkResponse);
+            headers: { ...this._headers, authorization: getToken() },
+            credentials: 'include',
+        }).then(this._checkResponse);
     }
 
     // обновление данных пользоателя
     patchProfile(name, about) {
         return fetch(
             `${this._url}/users/me`, {
-            method: 'PATCH',
-            headers: {
-                "Content-Type": "application/json",
-                authorization: `Bearer ${localStorage.getItem('token')}`
-              },
-            body: JSON.stringify({
-                name: name,
-                about: about
-            })
-        }
-        )
-            .then(res => this._checkResponse(res));
+            headers: { ...this._headers, authorization: getToken() },
+            credentials: 'include',
+        }).then(this._checkResponse);
     }
-
     // обновление фото пользоателя
     patchProfilePhoto(link) {
         return fetch(
             `${this._url}/users/me/avatar`, {
             method: 'PATCH',
-            headers: {
-                "Content-Type": "application/json",
-                authorization: `Bearer ${localStorage.getItem('token')}`
-            },
-            body: JSON.stringify({
-                avatar: link
-            })
-        }
-        )
-            .then(res => this._checkResponse(res));
+            credentials: 'include',
+            headers: { ...this._headers, authorization: getToken() },
+            body: JSON.stringify({ link: link }),
+        }).then(this._checkResponse);
     }
 
 
@@ -68,7 +48,7 @@ class mestoApi {
             headers: {
                 "Content-Type": "application/json",
                 authorization: `Bearer ${token}`
-              },
+            },
         }
         )
             .then(res => this._checkResponse(res));
@@ -79,39 +59,28 @@ class mestoApi {
         return fetch(
             `${this._url}/cards`, {
             method: 'POST',
-            headers: {
-                "Content-Type": "application/json",
-                authorization: `Bearer ${localStorage.getItem('token')}`
-              },
-            body: JSON.stringify({
-                name: name,
-                link: link
-            })
-        }
-        )
-            .then(res => this._checkResponse(res));
+            credentials: 'include',
+            headers: { ...this._headers, authorization: getToken() },
+            body: JSON.stringify({ name: name, link: link }),
+        }).then(this._checkResponse);
     }
 
     like(_id) {
         return fetch(`${this._url}/cards/likes/${_id}`, {
             method: 'PUT',
-            headers: {
-                "Content-Type": "application/json",
-                authorization: `Bearer ${localStorage.getItem('token')}`
-              },
+            credentials: 'include',
+            headers: { ...this._headers, authorization: getToken() },
         })
-            .then(res => this._checkResponse(res));
+            .then(this._checkResponse);
     }
 
     dislike(_id) {
         return fetch(`${this._url}/cards/likes/${_id}`, {
             method: 'DELETE',
-            headers: {
-                "Content-Type": "application/json",
-                authorization: `Bearer ${localStorage.getItem('token')}`
-              },
+            credentials: 'include',
+            headers: { ...this._headers, authorization: getToken() },
         })
-            .then(res => this._checkResponse(res));
+            .then(this._checkResponse);
     }
 
 
@@ -119,13 +88,9 @@ class mestoApi {
         return fetch(
             `${this._url}/cards/${_id}`, {
             method: 'DELETE',
-            headers: {
-                "Content-Type": "application/json",
-                authorization: `Bearer ${localStorage.getItem('token')}`
-              },
-        }
-        )
-            .then(res => this._checkResponse(res));
+            credentials: 'include',
+            headers: { ...this._headers, authorization: getToken() },
+        }).then(this._checkResponse);
     }
 
     //обновляем статус карточки
@@ -137,29 +102,33 @@ class mestoApi {
         }
     }
 
-//     //установить лайк на карточку
-//     _addLike(_id) {
-//         return fetch(
-//             `${this._url}/cards/likes/${_id}`,
-//             {
-//                 method: 'PUT',
-//                 headers: this._headers,
-//             }
-//         )
-//             .then(res => this._checkResponse(res));
-//     }
 
-//     //снять лайк с карточки
-//     _removeLike(_id) {
-//         return fetch(
-//             `${this._url}/cards/likes/${_id}`,
-//             {
-//                 method: 'DELETE',
-//                 headers: this._headers,
-//             }
-//         )
-//             .then(res => this._checkResponse(res));
-//     }
+    //     //установить лайк на карточку
+    //     _addLike(_id) {
+    //         return fetch(
+    //             `${this._url}/cards/likes/${_id}`,
+    //             {
+    //                 method: 'PUT',
+    //                 headers: this._headers,
+    //             }
+    //         )
+    //             .then(res => this._checkResponse(res));
+    //     }
+
+    //     //снять лайк с карточки
+    //     _removeLike(_id) {
+    //         return fetch(
+    //             `${this._url}/cards/likes/${_id}`,
+    //             {
+    //                 method: 'DELETE',
+    //                 headers: this._headers,
+    //             }
+    //         )
+    //             .then(res => this._checkResponse(res));
+    //     }
+}
+const getToken = () => {
+    return `Bearer ${localStorage.getItem('jwt')}`;
 }
 
 const Api = new mestoApi({
