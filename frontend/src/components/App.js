@@ -27,7 +27,7 @@ function App() {
   const [currentUser, setCurrentUser] = React.useState({});
   const [cards, setCards] = React.useState([]);
   const [email, setEmail] = React.useState('');
-  const [isRegistered, setIsRegistered] = React.useState(false);
+  const [isRegistered, setIsRegistered] = React.useState(null);
 
   const handleEditProfileClick = () => { setIsEditProfilePopupOpen(true); }
   const handleAddPlaceClick = () => { setIsAddPlacePopupOpen(true); }
@@ -56,7 +56,7 @@ function App() {
     const token = localStorage.getItem("token");
     if (token) {
       Api
-        .getUserInfoApi(token)
+        .getProfile(token)
         .then((data) => {
           setCurrentUser(data);
           console.log(data);
@@ -163,7 +163,6 @@ function App() {
 
   function handleAuthorize(email, password) {
     Auth.authorize(email, password).then((res) => {
-      console.log(res);
       if (res) {
         setLoggedIn(true);
         setEmail(email);
