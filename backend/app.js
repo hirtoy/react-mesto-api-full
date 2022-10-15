@@ -41,10 +41,10 @@ app.use(errorLogger);
 
 app.use(errors());
 
-// // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
-// app.use((err, req, res, next) => {
-//   res.status(err.statusCode).send({ message: err.message });
-// });
+// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
+app.use((err, req, res, next) => {
+  res.status(err.statusCode).send({ message: err.message });
+});
 
 // eslint-disable-next-line no-console
 app.listen(PORT, () => { console.log(`Сервер запущен на порту ${PORT}`); });

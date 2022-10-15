@@ -1,8 +1,9 @@
 const allowedCors = [
   'https://chirick.nomoredomains.icu',
   'http://chirick.nomoredomains.icu',
-  'http://api.chirick.nomoredomains.icu',
-  'https://api.chirick.nomoredomains.icu',
+  // 'http://api.chirick.nomoredomains.icu',
+  // 'https://api.chirick.nomoredomains.icu',
+  'localhost:3000',
 ];
 
 const cors = (req, res, next) => {
