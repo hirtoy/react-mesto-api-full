@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
-const cors = require('cors');
+const cors = require('./middlewares/cors');
 const auth = require('./middlewares/auth');
 const { errors, celebrate, Joi } = require('celebrate');
 const { createUser, login, signOut } = require('./controllers/users');
@@ -14,10 +14,7 @@ const NotFoundError = require('./helpers/errors/not-found-error');
 const { PORT = 3000 } = process.env;
 const app = express();
 
-app.use(cors({
-  origin: ['https://chirick.nomoredomains.icu', 'http://chirick.nomoredomains.icu'],
-  credentials: true,
-}));
+app.use(cors);
 
 async function main() {
   try {
