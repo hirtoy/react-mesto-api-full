@@ -54,7 +54,7 @@ class Auth {
 }
 
 const auth = new Auth({
-  baseUrl: 'https://api.chirick.nomoredomains.icu/',
+  baseUrl: 'https://api.chirick.nomoredomains.icu',
 });
 
 export default auth;

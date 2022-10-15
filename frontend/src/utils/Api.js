@@ -87,7 +87,7 @@ class Api {
 }
 
 const api = new Api({
-  baseUrl: 'https://api.chirick.nomoredomains.icu/',
+  baseUrl: 'https://api.chirick.nomoredomains.icu',
   headers: {
     'Content-Type': 'application/json',
   },
