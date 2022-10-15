@@ -1,35 +1,35 @@
-import '../styles/InfoToolTip.css';
-import checkMark from '../images/Check_mark.svg';
-import closeCross from '../images/Close_cross.svg';
+import successIcon from '../images/success-icon.svg';
+import errorIcon from '../images/error-icon.svg';
 
-const InfoToolTip = (props) => {
-  const { onStatusChange, registerStatus } = props;
-  const classList = `popup popup_tooltip ${
-    registerStatus ? 'popup_opened' : ''
-  }`;
+function InfoTooltip({ state, isOpen, onClose }) {
   return (
-    <div className={classList}>
-      <div className="popup__container popup__container_type_tooltip">
+    <section
+      className={`popup popup_type_info-tooltip ${isOpen && 'popup_is-opened'}`}
+    >
+      <div className="popup__container popup__container_type_info-tooltip">
         <button
-          onClick={() => onStatusChange('')}
-          className="popup__close popup__close_type_tooltip"
+          className="popup__close-button"
           type="button"
+          aria-label="Закрыть"
+          onClick={onClose}
         ></button>
         <img
-          className="popup__tooltip-image"
-          src={registerStatus === 'success' ? checkMark : closeCross}
-          alt={registerStatus === 'success' ? 'Галочка' : 'Крестик закрытия'}
-        />
-        {
-          <p className="popup__tooltip-message">
-            {registerStatus === 'success'
+          className="popup__icon"
+          src={state ? successIcon : errorIcon}
+          alt={
+            state
               ? 'Вы успешно зарегистрировались!'
-              : 'Что-то пошло не так! Попробуйте еще раз!'}
-          </p>
-        }
+              : 'Что-то пошло не так! Попробуйте ещё раз.'
+          }
+        />
+        <h2 className="popup__form-heading popup__form-heading_type_info-tooltip">
+          {state
+            ? 'Вы успешно зарегистрировались!'
+            : 'Что-то пошло не так! Попробуйте ещё раз.'}
+        </h2>
       </div>
-    </div>
+    </section>
   );
-};
+}
 
-export default InfoToolTip;
+export default InfoTooltip;

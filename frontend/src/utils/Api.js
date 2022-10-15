@@ -1,86 +1,97 @@
 class Api {
-  constructor({ baseURL, headers }) {
-    this._baseURL = baseURL;
-    this._headers = headers;
+  constructor(options) {
+    this._url = options.baseUrl;
+    this._headers = options.headers;
   }
 
   _checkResponse(res) {
     if (res.ok) {
       return res.json();
     }
+
     return Promise.reject(`Ошибка: ${res.status}`);
   }
 
-  getUserInfo() {
-    return fetch(`${this._baseURL}/users/me`, {
-      headers: {
-        ...this._headers,
-        authorization: getToken()
-      },
-      credentials: 'include',
-    }).then(this._checkResponse);
-  }
-
   getInitialCards() {
-    return fetch(`${this._baseURL}/cards`, {
-      headers: { ...this._headers, authorization: getToken() },
+    return fetch(`${this._url}/cards`, {
+      method: 'GET',
+      headers: this._headers,
       credentials: 'include',
     }).then(this._checkResponse);
   }
 
-  updateProfile({ name, job }) {
-    return fetch(`${this._baseURL}/users/me`, {
+  getUserData() {
+    return fetch(`${this._url}/users/me`, {
+      method: 'GET',
+      headers: this._headers,
+      credentials: 'include',
+    }).then(this._checkResponse);
+  }
+
+  updateProfileData(data) {
+    return fetch(`${this._url}/users/me`, {
       method: 'PATCH',
+      headers: this._headers,
+      body: JSON.stringify({
+        name: data.name,
+        about: data.about,
+      }),
       credentials: 'include',
-      headers: { ...this._headers, authorization: getToken() },
-      body: JSON.stringify({ name, about: job }),
     }).then(this._checkResponse);
   }
 
-  addNewCard({ place, href }) {
-    return fetch(`${this._baseURL}/cards`, {
+  updateAvatar(data) {
+    return fetch(`${this._url}/users/me/avatar`, {
+      method: 'PATCH',
+      headers: this._headers,
+      body: JSON.stringify({
+        avatar: data.avatar,
+      }),
+      credentials: 'include',
+    }).then(this._checkResponse);
+  }
+
+  addNewCard(data) {
+    return fetch(`${this._url}/cards`, {
       method: 'POST',
+      headers: this._headers,
+      body: JSON.stringify({
+        name: data.name,
+        link: data.link,
+      }),
       credentials: 'include',
-      headers: { ...this._headers, authorization: getToken() },
-      body: JSON.stringify({ name: place, link: href }),
     }).then(this._checkResponse);
   }
 
-  deleteOwnCard(id) {
-    return fetch(`${this._baseURL}/cards/${id}`, {
+  deleteCard(_id) {
+    return fetch(`${this._url}/cards/${_id}`, {
       method: 'DELETE',
+      headers: this._headers,
       credentials: 'include',
-      headers: { ...this._headers, authorization: getToken() },
     }).then(this._checkResponse);
   }
 
-  editUserAvatar({ avatar }) {
-    return fetch(`${this._baseURL}/users/me/avatar`, {
-      method: 'PATCH',
-      credentials: 'include',
-      headers: { ...this._headers, authorization: getToken() },
-      body: JSON.stringify({ avatar: avatar }),
-    }).then(this._checkResponse);
+  changeLikeCardStatus(_id, isLiked) {
+    return isLiked
+      ? fetch(`${this._url}/cards/${_id}/likes`, {
+          method: 'PUT',
+          headers: this._headers,
+          credentials: 'include',
+        }).then(this._checkResponse)
+      : fetch(`${this._url}/cards/${_id}/likes`, {
+          method: 'DELETE',
+          headers: this._headers,
+          credentials: 'include',
+        }).then(this._checkResponse);
   }
-
-  changeCardLike(id, isLiked) {
-    return fetch(`${this._baseURL}/cards/${id}/likes`, {
-      method: isLiked ? 'PUT' : 'DELETE',
-      credentials: 'include',
-      headers: { ...this._headers, authorization: getToken() },
-    }).then(this._checkResponse);
-  }
-}
-
-const getToken = () => {
-  return `Bearer ${localStorage.getItem('jwt')}`;
 }
 
 const api = new Api({
-  baseURL: "https://api.chirick.nomoredomains.icu",
+  baseUrl: 'https://api.chirick.nomoredomains.icu/',
   headers: {
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json',
   },
+  credentials: 'include',
 });
 
 export default api;

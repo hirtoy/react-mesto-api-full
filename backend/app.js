@@ -1,26 +1,44 @@
-const express = require('express');
 require('dotenv').config();
+const express = require('express');
 const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
-const { errors } = require('celebrate');
-const cors = require('./middelewares/cors');
-const userRoutes = require('./routes/users');
-const cardRoutes = require('./routes/cards');
-const auth = require('./middelewares/auth');
-const NotFoundError = require('./error/not-found-err');
-const { requestLogger, errorLogger } = require('./middelewares/Logger');
+const cookieParser = require('cookie-parser');
+const cors = require('cors');
+const auth = require('./middlewares/auth');
+const { errors, celebrate, Joi } = require('celebrate');
+const { createUser, login, signOut } = require('./controllers/users');
+const { routes } = require('./routes');
+const { regex } = require('./helpers/constants');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
+const NotFoundError = require('./helpers/errors/not-found-error');
 
 const { PORT = 3000 } = process.env;
 const app = express();
 
-mongoose.connect('mongodb://localhost:27017/mestodb', {
-  useNewUrlParser: true,
-  autoIndex: true,
-});
-app.use(cors);
+app.use(cors({
+  origin: ['https://chirick.nomoredomains.icu', 'http://chirick.nomoredomains.icu'],
+  credentials: true,
+}));
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+async function main() {
+  try {
+    await mongoose.connect('mongodb://localhost:27017/mestodb', {
+      useNewUrlParser: true,
+      useUnifiedTopology: false,
+    });
+
+    await app.listen(PORT);
+    // eslint-disable-next-line no-console
+    console.log(`App listening on port ${PORT}`);
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.log(err.message);
+  }
+}
+
+main();
+
+app.use(express.json());
+app.use(cookieParser());
 
 app.use(requestLogger);
 
@@ -30,22 +48,52 @@ app.get('/crash-test', () => {
   }, 0);
 });
 
+app.post(
+  '/signin',
+  celebrate({
+    body: Joi.object().keys({
+      email: Joi.string().required().email(),
+      password: Joi.string().required(),
+      name: Joi.string().min(2).max(30),
+      about: Joi.string().min(2).max(30),
+      avatar: Joi.string().pattern(regex),
+    }),
+  }),
+  login,
+);
+
+app.post(
+  '/signup',
+  celebrate({
+    body: Joi.object().keys({
+      email: Joi.string().required().email(),
+      password: Joi.string().required(),
+      name: Joi.string().min(2).max(30),
+      about: Joi.string().min(2).max(30),
+      avatar: Joi.string().pattern(regex),
+    }),
+  }),
+  createUser,
+);
+
+app.use('/signout', signOut);
+
 app.use(auth);
-app.use('/users', auth, userRoutes);
-app.use('/cards', auth, cardRoutes);
+app.use(routes);
 
 app.use((req, res, next) => {
-  next(new NotFoundError('Страница не найдена!'));
+  next(new NotFoundError('Старницы несуществует'));
 });
 
 app.use(errorLogger);
-
 app.use(errors());
 
-// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
 app.use((err, req, res, next) => {
-  res.status(err.statusCode).send({ message: err.message });
-});
+  const { statusCode = 500, message } = err;
 
-// eslint-disable-next-line no-console
-app.listen(PORT, () => { console.log(`Сервер запущен на порту ${PORT}`); });
+  res.status(statusCode).send({
+    message: statusCode === 500 ? 'На сервере произошла ошибка' : message,
+  });
+
+  next();
+});

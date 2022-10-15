@@ -1,60 +1,73 @@
-import React, { useState } from 'react';
-import PopupWithForm from './PopupWithForm';
+import { useEffect, useState } from 'react';
 
-function AddPlacePopup(props) {
-  const { isOpen, onClose, onAddPlace } = props;
+import PopupWithForm from './PopupWithForm.js';
 
-  const [place, setPlace] = useState('');
-  const [href, setHref] = useState('');
+function AddPlacePopup({ isOpen, onClose, onAddPlace, isLoading }) {
+  const [title, setTitle] = useState('');
+  const [link, setLink] = useState('');
 
-  const handleChangePlace = (e) => {
-    setPlace(e.target.value);
-  };
+  function handleTitleChange(evt) {
+    setTitle(evt.target.value);
+  }
 
-  const handleChangeHref = (e) => {
-    setHref(e.target.value);
-  };
+  function handleLinkChange(evt) {
+    setLink(evt.target.value);
+  }
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onAddPlace({ place, href });
-    setPlace('');
-    setHref('');
-  };
+  function handleSubmit(evt) {
+    evt.preventDefault();
+
+    onAddPlace({
+      name: title,
+      link: link,
+    });
+  }
+
+  useEffect(() => {
+    setTitle('');
+    setLink('');
+  }, [isOpen]);
 
   return (
     <PopupWithForm
       title="Новое место"
-      name="add"
-      buttonText="Сохранить"
+      name="card-add"
       isOpen={isOpen}
       onClose={onClose}
       onSubmit={handleSubmit}
+      isLoading={isLoading}
+      textButton={!isLoading ? 'Создать' : 'Сохранение...'}
     >
       <input
-        id="place-input"
-        className="popup__input popup__input_type_place"
+        className="popup__data-input popup__data-input_type_card-name"
         type="text"
-        value={place}
-        name="place"
+        name="name"
         placeholder="Название"
+        required
         minLength="2"
         maxLength="30"
-        required
-        onChange={handleChangePlace}
+        id="card-name-input"
+        value={title}
+        onChange={handleTitleChange}
       />
-      <span className="place-input-error popup__input-error"></span>
+      <span
+        className="popup__error popup__error_visible"
+        id="card-name-input-error"
+      ></span>
       <input
-        id="href-input"
-        className="popup__input popup__input_type_href"
+        className="popup__data-input popup__data-input_type_card-link"
         type="url"
-        value={href}
-        name="href"
+        name="link"
         placeholder="Ссылка на картинку"
         required
-        onChange={handleChangeHref}
+        id="card-link-input"
+        value={link}
+        onChange={handleLinkChange}
       />
-      <span className="href-input-error popup__input-error"></span>
+      <span
+        className="popup__error popup__error_visible"
+        id="card-link-input-error"
+      ></span>
     </PopupWithForm>
   );
 }

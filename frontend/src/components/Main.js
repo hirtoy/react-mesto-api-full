@@ -1,84 +1,72 @@
-import React, { useContext } from 'react';
-import { Link } from 'react-router-dom';
-import Card from './Card';
-import Footer from './Footer';
-import Header from './Header';
-import { CurrentUserContext } from '../contexts/CurrentUserContext';
+import { useContext } from 'react';
+import { CurrentUserContext } from '../contexts/CurrentUserContext.js';
 
-function Main(props) {
-  const {
-    onEditProfile,
-    onEditAvatar,
-    onAddPlace,
-    onCardClick,
-    cards,
-    onCardLike,
-    onCardDelete,
-    onLogOut,
-  } = props;
+import Card from './Card.js';
 
+function Main({
+  onEditAvatar,
+  onEditProfile,
+  onAddPlace,
+  onCardClick,
+  cards,
+  onCardLike,
+  onCardDeleteClick,
+}) {
   const currentUser = useContext(CurrentUserContext);
-  const { email, avatar, name, about } = currentUser;
+
+  const cardsElements = cards.map((card) => (
+    <li className="card" key={card._id}>
+      <Card
+        card={card}
+        onCardClick={onCardClick}
+        onCardLike={onCardLike}
+        onCardDeleteClick={onCardDeleteClick}
+      />
+    </li>
+  ));
 
   return (
-    <>
-      <Header>
-        <div className="header__container">
-          <p className="header__email">{email}</p>
-          <Link className="header__link" to="/sign-in" onClick={onLogOut}>
-            Выйти
-          </Link>
+    <main className="content">
+      <section className="profile">
+        <div className="profile__avatar-container">
+          <img
+            className="profile__avatar"
+            src={currentUser.avatar}
+            alt="Аватар пользователя"
+          />
+          <button
+            className="profile__avatar-button"
+            type="button"
+            aria-label="Изменить аватар"
+            onClick={onEditAvatar}
+          ></button>
         </div>
-      </Header>
-      <main className="content">
-        <section className="profile">
-          <div className="profile__edit" onClick={onEditAvatar}>
-            <img
-              className="profile__avatar"
-              src={avatar}
-              alt="Фото Жак-Ив Кусто"
-            />
-            <div className="profile__button-edit"></div>
-          </div>
-          <div className="profile__block">
-            <div className="profile__info">
-              <div className="profile__content">
-                <h1 className="profile__title">{name}</h1>
-                <button
-                  onClick={onEditProfile}
-                  className="profile__info-button"
-                  type="button"
-                  aria-label="Редактировать профиль"
-                />
-              </div>
-              <p className="profile__subtitle">{about}</p>
-            </div>
+        <div className="profile__info">
+          <div className="profile__wrapper">
+            <h1 className="profile__name">{currentUser.name}</h1>
             <button
-              onClick={onAddPlace}
-              className="profile__button"
+              className="profile__edit-button"
               type="button"
-              aria-label="Добавить фото"
-            />
+              aria-label="Редактировать профиль"
+              onClick={onEditProfile}
+            ></button>
           </div>
-        </section>
+          <p className="profile__description">{currentUser.about}</p>
+        </div>
+        <button
+          className="profile__add-button"
+          type="button"
+          aria-label="Добавить карточку"
+          onClick={onAddPlace}
+        ></button>
+      </section>
 
-        <section className="grid">
-          <ul className="elements">
-            {cards.map((card) => (
-              <Card
-                onClick={onCardClick}
-                key={card._id}
-                card={card}
-                onCardLike={onCardLike}
-                onCardDelete={onCardDelete}
-                cards={cards}
-              />
-            ))}
-          </ul>
-        </section>
-        <Footer />
-      </main>
-    </>
+      <section className="photo-grid">
+        <ul className="photo-grid__list">
+          {cardsElements}
+        </ul>
+      </section>
+    </main>
   );
 }
 

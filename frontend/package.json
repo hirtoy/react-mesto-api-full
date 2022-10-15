@@ -15,11 +15,11 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "set PORT=3002 && react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "deploy": "npm run build"
+    "deploy": "npm run build && scp -r ./build/* hirtoy@51.250.92.21:/home/hirtoy/mesto-frontend"
   },
   "eslintConfig": {
     "extends": [

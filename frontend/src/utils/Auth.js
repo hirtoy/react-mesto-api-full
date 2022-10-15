@@ -1,59 +1,60 @@
-export const BASE_URL = 'https://api.chirick.nomoredomains.icu';
+class Auth {
+  constructor(options) {
+    this._url = options.baseUrl;
+  }
 
-export const register = (email, password) => {
-  return fetch(`${BASE_URL}/signup`, {
-    method: 'POST',
-    credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ email, password }),
-  })
-    .then((res) => {
-      if (res.status === 400) {
-        throw new Error('Bad response from server');
-      }
-      if (res.status === 409) {
-        throw new Error('Такой пользователь уже существует');
-      }
-      return res.json();
-    })
-    .then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-    })
-};
-
-export const autorise = (email, password) => {
-  return fetch(`${BASE_URL}/signin`, {
-    method: 'POST',
-    credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ email, password }),
-  })
-  .then((res) => {
+  _checkResponse(res) {
     if (res.ok) {
       return res.json();
     }
-  })
-};
 
-export const getContent = (token) => {
-  return fetch(`${BASE_URL}/users/me`, {
-    method: 'GET',
-    credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json',
-      'authorization': 'Bearer' + token,
-    },
-  })
-    .then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
+    return Promise.reject(`Ошибка: ${res.status}`);
+  }
+
+  register(email, password) {
+    return fetch(`${this._url}/signup`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, password }),
+    }).then(this._checkResponse);
+  }
+
+  login(email, password) {
+    return fetch(`${this._url}/signin`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, password }),
+      credentials: 'include',
+    }).then(this._checkResponse);
+  }
+
+  getContent() {
+    return fetch(`${this._url}/users/me`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+    }).then(this._checkResponse);
+  }
+
+  signOut() {
+    return fetch(`${this._url}/signout`, {
+      method: "GET",
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
     })
-    .then((data) => data);
-};
+  }
+}
+
+const auth = new Auth({
+  baseUrl: 'https://api.chirick.nomoredomains.icu/',
+});
+
+export default auth;

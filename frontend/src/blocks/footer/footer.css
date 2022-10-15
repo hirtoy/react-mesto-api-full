@@ -1,5 +1,9 @@
-@media screen and (max-width: 450px) {
-    .footer {
-        padding: 0 19px;
+.footer {
+  margin: 0 15.625%;
+}
+
+@media screen and (max-width: 1024px) {
+  .footer {
+    margin: 0 5.9375%;
   }
 }

@@ -1,75 +1,55 @@
-import { React, useState } from 'react';
-import { useHistory, Link } from 'react-router-dom';
-import Header from './Header';
-import * as auth from '../utils/Auth';
-import '../styles/Register.css';
+import { useState } from 'react';
 
-const Login = ({ handleLogin }) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [message, setMessage] = useState('');
+function Login({ onLogin }) {
+  const [loginData, setLoginData] = useState({
+    email: '',
+    password: '',
+  });
 
-  const history = useHistory();
+  const handleChange = (evt) => {
+    const { name, value } = evt.target;
+    setLoginData({
+      ...loginData,
+      [name]: value,
+    });
+  };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!email || !password) {
-      return;
-    }
-    auth
-      .autorise(email, password)
-      .then((data) => {
-        setEmail('');
-        setPassword('');
-        handleLogin();
-        history.push('/');
-      })
-      .catch((err) => {
-        console.log(err);
-        setMessage('Что-то пошло не так! Попробуйте еще раз!');
-      });
+  const handleSubmit = (evt) => {
+    evt.preventDefault();
+    const { email, password } = loginData;
+    onLogin(email, password);
   };
 
   return (
-    <>
-      <Header>
-        <Link className="header__link" to="/sign-up">
-          Регистрация
-        </Link>
-      </Header>
-      <div className="register">
-        <p className="register__welcome">Вход</p>
-        <p className="register__error">{message}</p>
-        <form className="register__form" onSubmit={handleSubmit}>
-          <input
-            className="register__input"
-            id="email"
-            name="email"
-            value={email}
-            type="email"
-            placeholder="Email"
-            onChange={(e) => {
-              setEmail(e.target.value);
-            }}
-          />
-          <input
-            className="register__input"
-            id="password"
-            name="password"
-            value={password}
-            type="password"
-            placeholder="Пароль"
-            onChange={(e) => {
-              setPassword(e.target.value);
-            }}
-          />
-          <button type="submit" className="register__submit">
-            Войти
-          </button>
-        </form>
-      </div>
-    </>
+    <section className="login">
+      <h1 className="login__title">Вход</h1>
+      <form className="login__form" name="login" onSubmit={handleSubmit}>
+        <input
+          className="login__data-input login__data-input_type_login-email"
+          type="text"
+          name="email"
+          placeholder="Email"
+          required
+          id="login-email-input"
+          value={loginData.email || ''}
+          onChange={handleChange}
+        />
+        <input
+          className="login__data-input login__data-input_type_login-password"
+          type="password"
+          name="password"
+          placeholder="Пароль"
+          required
+          id="login-password-input"
+          value={loginData.password || ''}
+          onChange={handleChange}
+        />
+        <button className="login__form-submit" type="submit">
+          Войти
+        </button>
+      </form>
+    </section>
   );
-};
+}
 
 export default Login;

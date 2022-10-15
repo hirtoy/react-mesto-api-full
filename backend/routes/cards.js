@@ -1,39 +1,59 @@
-const router = require('express').Router();
+const express = require('express');
 const { celebrate, Joi } = require('celebrate');
-// eslint-disable-next-line import/no-unresolved
-const { validate } = require('../utils/validate');
-Joi.objectId = require('joi-objectid')(Joi);
 
+const cardRoutes = express.Router();
 const {
-  getCards, createCard, deleteCardById, likeCard, dislikeCard,
+  getCards,
+  createCard,
+  deleteCard,
+  likeCard,
+  dislikeCard,
 } = require('../controllers/cards');
+const { regex } = require('../helpers/constants');
 
-router.get('/', getCards);
+cardRoutes.get('/', getCards);
 
-router.post('/', celebrate({
-  body: Joi.object().keys({
-    name: Joi.string().required().min(2).max(30),
-    link: Joi.string().required().uri().regex(/^https?:\/\/(www.){0,1}([0-9a-zA-Z_-]+\.){1,3}[a-zA-Z]+[A-Za-z0-9-._~:/?#[\]@!$&'()*+,;=]+#?$/m)
-      .required(),
-  }).unknown(true),
-}), createCard);
-
-router.delete('/:id', celebrate({
-  params: Joi.object().keys({
-    id: Joi.objectId(),
+cardRoutes.post(
+  '/',
+  celebrate({
+    body: Joi.object().keys({
+      name: Joi.string().required().min(2).max(30),
+      link: Joi.string()
+        .required()
+        .pattern(regex),
+    }),
   }),
-}), deleteCardById);
+  createCard,
+);
 
-router.put('/:cardId/likes', celebrate({
-  params: Joi.object().keys({
-    cardId: Joi.string().custom(validate, 'ObjectId validation'),
+cardRoutes.delete(
+  '/:cardId',
+  celebrate({
+    params: Joi.object().keys({
+      cardId: Joi.string().required().length(24).hex(),
+    }),
   }),
-}), likeCard);
+  deleteCard,
+);
 
-router.delete('/:cardId/likes', celebrate({
-  params: Joi.object().keys({
-    cardId: Joi.string().custom(validate, 'ObjectId validation'),
+cardRoutes.put(
+  '/:cardId/likes',
+  celebrate({
+    params: Joi.object().keys({
+      cardId: Joi.string().required().length(24).hex(),
+    }),
   }),
-}), dislikeCard);
+  likeCard,
+);
 
-module.exports = router;
+cardRoutes.delete(
+  '/:cardId/likes',
+  celebrate({
+    params: Joi.object().keys({
+      cardId: Joi.string().required().length(24).hex(),
+    }),
+  }),
+  dislikeCard,
+);
+
+module.exports = { cardRoutes };

@@ -1,38 +1,40 @@
-export const dataValidator = {
-  inputSelector: '.popup__input',
-  submitButtonSelector: '.popup__submit',
-  inactiveButtonClass: 'popup__submit_disabled',
-  inputErrorClass: 'popup__input_type_error',
-  errorClass: 'popup__input-error',
+export const validationConfig = {
+  formSelector: '.popup__form',
+  inputSelector: '.popup__data-input',
+  submitButtonSelector: '.popup__form-submit',
+  inactiveButtonClass: 'popup__form-submit_type_disabled',
+  inputErrorClass: 'popup__data-input_type_error',
+  errorClass: 'popup__error_visible',
 };
 
-export const elementsListSelector = '.elements';
+export const cardListSelector = '.photo-grid__list';
 
-export const ESCAPE = 'Escape';
-
-export const popupProfileOpenButton = document.querySelector(
-  '.profile__info-button'
+export const buttonOpenPopupEditProfile = document.querySelector(
+  '.profile__edit-button'
+);
+export const popupEditProfileForm = document.querySelector(
+  '.popup__form_type_profile-edit'
+);
+export const popupEditProfileNameInput = document.querySelector(
+  '.popup__data-input_type_profile-name'
+);
+export const popupEditProfileDescriptionInput = document.querySelector(
+  '.popup__data-input_type_profile-description'
 );
 
-export const formProfile = document.querySelector('.popup__form_type_profile');
-
-export const formAdd = document.querySelector('.popup__form_type_add');
-
-export const formChangeProfile = document.querySelector(
-  '.popup__form_type_update'
+export const buttonOpenPopupAddCard = document.querySelector(
+  '.profile__add-button'
+);
+export const popupAddCardForm = document.querySelector(
+  '.popup__form_type_card-add'
+);
+export const popupAddCardNameInput = document.querySelector(
+  '.popup__data-input_type_card-name'
+);
+export const popupAddCardLinkInput = document.querySelector(
+  '.popup__data-input_type_card-link'
 );
 
-export const popupAddPhotoOpenButton =
-  document.querySelector('.profile__button');
-
-export const title = document.querySelector('.profile__title');
-export const subtitle = document.querySelector('.profile__subtitle');
-export const avatar = document.querySelector('.profile__avatar');
-export const editAvatar = document.querySelector('.profile__edit');
-
-// export const API_CONFIG = {
-//   baseURL: 'https//api.chirick.nomoredomains.icu',
-//   headers: {
-//     'Content-Type': 'application/json',
-//   },
-// };
+export const buttonOpenPopupChangeAvatar = document.querySelector(
+  '.profile__avatar-button'
+);

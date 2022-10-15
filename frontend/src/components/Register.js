@@ -1,79 +1,62 @@
-import { React, useState } from 'react';
-import { Link, useHistory } from 'react-router-dom';
-import Header from './Header';
-import * as auth from '../utils/Auth';
-import '../styles/Register.css';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
-const Register = ({ onStatusChange }) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+function Register({ onRegister }) {
+  const [registerData, setRegisterData] = useState({
+    email: '',
+    password: '',
+  });
 
-  const history = useHistory();
-
-  const handleChangeEmail = (e) => {
-    setEmail(e.target.value);
+  const handleChange = (evt) => {
+    const { name, value } = evt.target;
+    setRegisterData({
+      ...registerData,
+      [name]: value,
+    });
   };
 
-  const handleChangePassword = (e) => {
-    setPassword(e.target.value);
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    auth
-      .register(email, password)
-      .then((res) => {
-        if (res) {
-          onStatusChange('success');
-          history.push('/sign-in');
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-        onStatusChange('failed');
-      });
+  const handleSubmit = (evt) => {
+    evt.preventDefault();
+    const { email, password } = registerData;
+    onRegister(email, password);
   };
 
   return (
-    <>
-      <Header>
-        <Link className="header__link" to="/sign-in">
+    <section className="register">
+      <h1 className="register__title">Регистрация</h1>
+      <form className="register__form" name="register" onSubmit={handleSubmit}>
+        <input
+          className="register__data-input register__data-input_type_register-email"
+          type="text"
+          name="email"
+          placeholder="Email"
+          required
+          id="register-email-input"
+          value={registerData.email || ''}
+          onChange={handleChange}
+        />
+        <input
+          className="register__data-input register__data-input_type_register-password"
+          type="password"
+          name="password"
+          placeholder="Пароль"
+          required
+          id="register-password-input"
+          value={registerData.password || ''}
+          onChange={handleChange}
+        />
+        <button className="register__form-submit" type="submit">
+          Зарегистрироваться
+        </button>
+      </form>
+      <p className="register__footer">
+        Уже зарегистрированы?&nbsp;
+        <Link to="/sign-in" className="register__link">
           Войти
         </Link>
-      </Header>
-      <div className="register">
-        <p className="register__welcome">Регистрация</p>
-        <form className="register__form" onSubmit={handleSubmit}>
-          <input
-            className="register__input"
-            id="email"
-            name="email"
-            value={email}
-            type="email"
-            placeholder="Email"
-            onChange={handleChangeEmail}
-          />
-          <input
-            className="register__input"
-            id="password"
-            name="password"
-            value={password}
-            type="password"
-            placeholder="Пароль"
-            onChange={handleChangePassword}
-          />
-          <button type="submit" className="register__submit">
-            Зарегистрироваться
-          </button>
-        </form>
-        <div className="register__signin">
-          <Link to="/sign-in" className="register__login-link">
-            Уже зарегистрированы? Войти
-          </Link>
-        </div>
-      </div>
-    </>
+      </p>
+    </section>
   );
-};
+}
 
 export default Register;
