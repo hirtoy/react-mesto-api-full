@@ -30,6 +30,7 @@ app.get('/crash-test', () => {
   }, 0);
 });
 
+app.use(auth);
 app.use('/users', auth, userRoutes);
 app.use('/cards', auth, cardRoutes);
 
