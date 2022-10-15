@@ -30,9 +30,9 @@ export const subtitle = document.querySelector('.profile__subtitle');
 export const avatar = document.querySelector('.profile__avatar');
 export const editAvatar = document.querySelector('.profile__edit');
 
-export const API_CONFIG = {
-  baseURL: 'https//api.chirick.nomoredomains.icu',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-};
+// export const API_CONFIG = {
+//   baseURL: 'https//api.chirick.nomoredomains.icu',
+//   headers: {
+//     'Content-Type': 'application/json',
+//   },
+// };

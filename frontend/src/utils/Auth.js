@@ -1,5 +1,4 @@
-import { API_CONFIG } from './constants';
-const BASE_URL = API_CONFIG.baseURL;
+export const BASE_URL = 'https://api.chirick.nomoredomains.icu';
 
 export const register = (email, password) => {
   return fetch(`${BASE_URL}/signup`, {

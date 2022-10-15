@@ -1,5 +1,3 @@
-import { API_CONFIG } from './constants';
-
 class Api {
   constructor(options) {
     this._baseURL = options.baseURL;
@@ -75,6 +73,11 @@ const getToken = ()=> {
   return `Bearer ${localStorage.getItem('jwt')}`;
 }
 
-const api = new Api(API_CONFIG);
+const api = new Api({
+  baseUrl: "https://api.chirick.nomoredomains.icu",
+  headers: {
+      "Content-Type": "application/json",
+  },
+});
 
 export default api;

@@ -41,7 +41,7 @@ function App() {
     const isLiked = card.likes.some((i) => i === currentUser._id);
 
     api
-      .changeCardLike(card._id, !isLiked)
+      .changeCardLike(card._id, !isLiked) 
       .then((newCard) => {
         const newCards = cards.map((c) => (c._id === card._id ? newCard.data : c));
         setCards(newCards);
@@ -68,30 +68,32 @@ function App() {
     }
   }
 
+  const tokenCheck = () => {
+    const jwt = localStorage.getItem('jwt');
+    if (jwt) {
+      auth
+        .getContent(jwt)
+        .then((res) => {
+          if (res) {
+            setCurrentUser((prevState) => ({
+              ...prevState,
+              email: res.data.email,
+            }));
+            setLoggedIn(true);
+            history.push('/');
+          }
+        })
+        .catch((err) => {
+          history.push('/sign-in')
+          console.log(err);
+        });
+    }
+  };
+
   useEffect(() => {
-    const tokenCheck = () => {
-      const jwt = localStorage.getItem('jwt');
-      if (jwt) {
-        auth
-          .getContent(jwt)
-          .then((res) => {
-            if (res) {
-              setCurrentUser((prevState) => ({
-                ...prevState,
-                email: res.data.email,
-              }));
-              setLoggedIn(true);
-              history.push('/');
-            }
-          })
-          .catch((err) => {
-            // history.push('/sign-in')
-            console.log(err);
-          });
-      }
-    };
     tokenCheck();
-  }, [history]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (loggedIn) {
@@ -145,7 +147,7 @@ function App() {
     api
       .updateProfile({ name, job })
       .then((res) => {
-        setCurrentUser({ ...currentUser, name: res.data.name, about: res.data.about });
+        setCurrentUser({ ...currentUser, name: res.data.name,  about: res.data.about});
         handleCloseAllPopups();
       })
       .catch((err) => {
@@ -157,7 +159,7 @@ function App() {
     api
       .editUserAvatar(link)
       .then(() => {
-        setCurrentUser({ ...currentUser, avatar: link });
+        setCurrentUser({ ...currentUser, avatar:link });
         handleCloseAllPopups();
       })
       .catch((err) => {
