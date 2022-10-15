@@ -1,9 +1,9 @@
 const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
-Joi.objectId = require('joi-objectid')(Joi);
 const {
   getUsers, getUserById, getAboutUser, updateUser, updateAvatar, login, createUser,
 } = require('../controllers/users');
+const { validate } = require('../utils/validate');
 
 router.get('/', getUsers);
 
@@ -11,7 +11,7 @@ router.get('/me', getAboutUser);
 
 router.get('/:id', celebrate({
   params: Joi.object().keys({
-    id: Joi.objectId(),
+    userId: Joi.string().custom(validate, 'ObjectId validation'),
   }),
 }), getUserById);
 

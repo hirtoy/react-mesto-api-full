@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
-
-Joi.objectId = require('joi-objectid')(Joi);
+// eslint-disable-next-line import/no-unresolved
+const { validate } = require('../utils/validate');
 
 const {
   getCards, createCard, deleteCardById, likeCard, dislikeCard,
@@ -15,19 +15,15 @@ router.post('/', celebrate({
       .required(),
   }).unknown(true),
 }), createCard);
-router.delete('/:id', celebrate({
-  params: Joi.object().keys({
-    id: Joi.objectId(),
-  }),
-}), deleteCardById);
+router.delete('/:id', deleteCardById);
 router.put('/:cardId/likes', celebrate({
   params: Joi.object().keys({
-    cardId: Joi.objectId(),
+    cardId: Joi.string().custom(validate, 'ObjectId validation'),
   }),
 }), likeCard);
 router.delete('/:cardId/likes', celebrate({
   params: Joi.object().keys({
-    cardId: Joi.objectId(),
+    cardId: Joi.string().custom(validate, 'ObjectId validation'),
   }),
 }), dislikeCard);
 
