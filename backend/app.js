@@ -43,9 +43,7 @@ app.use(errorLogger);
 
 app.use(errorHandler);
 
-app.all('/*', () => {
-  throw new NotFoundError('Неверный запрос');
-});
+app.use((req, res, next) => next(new NotFoundError(errors.ERROR_BAD_REQUEST)));
 
 // eslint-disable-next-line no-console
 app.listen(PORT, () => { console.log(`Сервер запущен на порту ${PORT}`); });
