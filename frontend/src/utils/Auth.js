@@ -19,8 +19,10 @@ export const register = (email, password) => {
       return res.json();
     })
     .then((res) => {
-      return res;
-    });
+      if (res.ok) {
+        return res.json();
+      }
+    })
 };
 
 export const autorise = (email, password) => {
@@ -32,14 +34,11 @@ export const autorise = (email, password) => {
     },
     body: JSON.stringify({ email, password }),
   })
-    .then((res) => res.json())
-    .then((res) => {
-      if (res) {
-        console.log('token', res.data)
-        localStorage.setItem('jwt', res.data);
-        return res.data;
-      }
-    });
+  .then((res) => {
+    if (res.ok) {
+      return res.json();
+    }
+  })
 };
 
 export const getContent = (token) => {
@@ -48,7 +47,7 @@ export const getContent = (token) => {
     credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
-      'authorization': `Bearer ${token}`,
+      'authorization': 'Bearer' + token,
     },
   })
     .then((res) => {
