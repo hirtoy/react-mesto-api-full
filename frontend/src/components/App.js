@@ -115,25 +115,28 @@ function App() {
   function handleRegister(email, password) {
     Auth.register(email, password)
       .then((res) => {
-        setLoggedIn(true);
+        if (res) {
+        setIsRegistered(true);
         handleInfoTolltipOpen(true);
-      })
-      .catch(err => {
+        } else {
         setIsRegistered(false);
         handleInfoTolltipOpen(true);
-      });
+        }
+      })
   }
 
   function handleAuthorize(email, password) {
-    Auth.authorize(email, password)
-      .then((data) => {
-        if (data.token) {
-          localStorage.setItem('token', data.token);
-          handleLogin(email);
-          history.push("/");
-        }
-      })
-      .catch(console.error)
+    Auth.authorize(email, password).then((res) => {
+      console.log(res);
+      if (res) {
+        setLoggedIn(true);
+        setEmail(email);
+        history.push("/");
+      } else {
+        setIsRegistered(false);
+        setIsInfoTooltipOpen(true);
+      }
+    });
   }
 
   function handleSignOut() {
@@ -142,19 +145,19 @@ function App() {
     localStorage.removeItem('token');
   }
 
-  function handleLogin(email) {
-    setEmail(email);
-    setLoggedIn(true);
-    history.push('/main')
-    Promise.all([Api.getProfile(), Api.getInitialCards()])
-      .then(([profile, cards]) => {
-        //отображаем информацию профиля    
-        setCurrentUser(profile);
-        //рисуем все карточки
-        setCards(cards);
-      })
-      .catch(console.error)
-  }
+  // function handleLogin(email) {
+  //   setEmail(email);
+  //   setLoggedIn(true);
+  //   history.push('/main')
+  //   Promise.all([Api.getProfile(), Api.getInitialCards()])
+  //     .then(([profile, cards]) => {
+  //       //отображаем информацию профиля    
+  //       setCurrentUser(profile);
+  //       //рисуем все карточки
+  //       setCards(cards);
+  //     })
+  //     .catch(console.error)
+  // }
 
 
   return (
