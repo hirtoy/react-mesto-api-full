@@ -52,10 +52,9 @@ export const getContent = (token) => {
     },
   })
     .then((res) => {
-      if (res.status === 401) {
-        throw new Error('Invalid token');
+      if (res.ok) {
+        return res.json();
       }
-      return res.json()
     })
     .then((data) => data);
 };
