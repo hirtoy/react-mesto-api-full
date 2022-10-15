@@ -1,58 +1,28 @@
-const routerUser = require('express').Router();
+const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
-const auth = require('../middelewares/auth');
-const { validate } = require('../utils/validate');
-
+// eslint-disable-next-line import/no-unresolved
+Joi.objectId = require('joi-objectid')(Joi);
 const {
-  getAllUsers,
-  getUser,
-  updateUser,
-  updateAvatar,
-  // login,
-  // createUser,
-  getUserInfo,
+  getUsers, getUserById, getAboutUser, updateUser, updateAvatar,
 } = require('../controllers/users');
 
-// routerUser.post('/signin', celebrate({
-//   body: Joi.object().keys({
-//     email: Joi.string().required().email(),
-//     password: Joi.string().required(),
-//   }),
-// }), login);
-
-// routerUser.post('/signup', celebrate({
-//   body: Joi.object().keys({
-//     email: Joi.string().required().email(),
-//     password: Joi.string().required().pattern(/^[a-zA-Z0-9]{3,30}$/),
-//     name: Joi.string().min(2).max(30),
-//     about: Joi.string().min(2).max(30),
-// eslint-disable-next-line max-len
-//     avatar: Joi.string().regex(/^https?:\/\/(www.){0,1}([0-9a-zA-Z_-]+\.){1,3}[a-zA-Z]+[A-Za-z0-9-._~:/?#[\]@!$&'()*+,;=]+#?$/m),
-//   })
-//     .unknown(true),
-// }), createUser);
-
-routerUser.get('/users', auth, getAllUsers);
-
-routerUser.get('/users/me', auth, getUserInfo);
-
-routerUser.get('/users/:userId', celebrate({
+router.get('/', getUsers);
+router.get('/me', getAboutUser);
+router.get('/:id', celebrate({
   params: Joi.object().keys({
-    userId: Joi.string().custom(validate, 'ObjectId validation'),
+    id: Joi.objectId(),
   }),
-}), auth, getUser);
-
-routerUser.patch('/users/me', celebrate({
+}), getUserById);
+router.patch('/me', celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
   }),
-}), auth, updateUser);
-
-routerUser.patch('/users/me/avatar', celebrate({
+}), updateUser);
+router.patch('/me/avatar', celebrate({
   body: Joi.object().keys({
-    avatar: Joi.string().required().regex(/^https?:\/\/(www.){0,1}([0-9a-zA-Z_-]+\.){1,3}[a-zA-Z]+[A-Za-z0-9-._~:/?#[\]@!$&'()*+,;=]+#?$/m),
+    avatar: Joi.string().uri().regex(/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/),
   }),
-}), auth, updateAvatar);
+}), updateAvatar);
 
-module.exports = routerUser;
+module.exports = router;
