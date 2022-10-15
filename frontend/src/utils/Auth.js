@@ -51,11 +51,11 @@ export const getContent = (token) => {
       'authorization': `Bearer ${token}`,
     },
   })
-    .then((res) => {
-      if (res.status === 401) {
-        throw new Error('Invalid token');
-      }
-      return res.json()
-    })
+    // .then((res) => {
+    //   if (res.status === 401) {
+    //     throw new Error('Invalid token');
+    //   }
+    //   return res.json()
+    // })
     .then((data) => data);
 };
