@@ -11,7 +11,7 @@ const {
 // отображение карточек на странице
 module.exports.getAllCards = (req, res, next) => {
   Card.find({})
-    .then((cards) => res.status(STATUS_OK).send(cards))
+    .then((cards) => res.status(STATUS_OK).send({ data: cards }))
     .catch(next);
 };
 
@@ -21,7 +21,7 @@ module.exports.createCard = (req, res, next) => {
   const { name, link } = req.body;
 
   Card.create({ name, link, owner })
-    .then((card) => res.status(STATUS_CREATED).send(card))
+    .then((card) => res.status(STATUS_CREATED).send({ data: card }))
     .catch((error) => {
       if (error.name === 'ValidationError') {
         // eslint-disable-next-line new-cap
