@@ -1,10 +1,10 @@
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
-const cors = require('./middelewares/cors');
-const cookieParser = require('cookie-parser');
+// const cookieParser = require('cookie-parser');
 const { errors } = require('celebrate');
 const bodyParser = require('body-parser');
+const cors = require('./middelewares/cors');
 const routerUser = require('./routes/users');
 const routerCards = require('./routes/cards');
 const NotFoundError = require('./error/not-found-errors');
@@ -17,7 +17,7 @@ const app = express();
 
 app.use(cors);
 
-app.use(cookieParser());
+// app.use(cookieParser());
 
 app.get('/crash-test', () => {
   setTimeout(() => {
@@ -47,4 +47,5 @@ app.all('/*', () => {
   throw new NotFoundError('Неверный запрос');
 });
 
-app.listen(PORT);
+// eslint-disable-next-line no-console
+app.listen(PORT, () => { console.log(`Сервер запущен на порту ${PORT}`); });
