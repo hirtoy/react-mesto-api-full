@@ -1,7 +1,7 @@
 class Api {
-  constructor(options) {
-    this._baseURL = options.baseURL;
-    this._headers = options.headers;
+  constructor({ baseURL, headers }) {
+    this._baseURL = baseURL;
+    this._headers = headers;
   }
 
   _checkResponse(res) {
@@ -74,7 +74,7 @@ const getToken = ()=> {
 }
 
 const api = new Api({
-  baseUrl: "https://api.chirick.nomoredomains.icu",
+  baseURL: "https://api.chirick.nomoredomains.icu",
   headers: {
       "Content-Type": "application/json",
   },
