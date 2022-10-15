@@ -18,12 +18,13 @@ function Main(props) {
   } = props;
 
   const currentUser = useContext(CurrentUserContext);
+  const { email, avatar, name, about } = currentUser;
 
   return (
     <>
       <Header>
         <div className="header__container">
-          <p className="header__email">{currentUser.email}</p>
+          <p className="header__email">{email}</p>
           <Link className="header__link" to="/sign-in" onClick={onLogOut}>
             Выйти
           </Link>
@@ -34,7 +35,7 @@ function Main(props) {
           <div className="profile__edit" onClick={onEditAvatar}>
             <img
               className="profile__avatar"
-              src={currentUser.avatar}
+              src={avatar}
               alt="Фото Жак-Ив Кусто"
             />
             <div className="profile__button-edit"></div>
@@ -42,7 +43,7 @@ function Main(props) {
           <div className="profile__block">
             <div className="profile__info">
               <div className="profile__content">
-                <h1 className="profile__title">{currentUser.name}</h1>
+                <h1 className="profile__title">{name}</h1>
                 <button
                   onClick={onEditProfile}
                   className="profile__info-button"
@@ -50,7 +51,7 @@ function Main(props) {
                   aria-label="Редактировать профиль"
                 />
               </div>
-              <p className="profile__subtitle">{currentUser.about}</p>
+              <p className="profile__subtitle">{about}</p>
             </div>
             <button
               onClick={onAddPlace}
