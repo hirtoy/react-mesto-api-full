@@ -68,28 +68,6 @@ function App() {
     }
   }
 
-  // const tokenCheck = () => {
-  //   const jwt = localStorage.getItem('jwt');
-  //   if (jwt) {
-  //     auth
-  //       .getContent(jwt)
-  //       .then((res) => {
-  //         if (res) {
-  //           setCurrentUser((prevState) => ({
-  //             ...prevState,
-  //             email: res.data.email,
-  //           }));
-  //           setLoggedIn(true);
-  //           history.push('/');
-  //         }
-  //       })
-  //       .catch((err) => {
-  //         history.push('/sign-in')
-  //         console.log(err);
-  //       });
-  //   }
-  // };
-
   useEffect(() => {
     const tokenCheck = () => {
       const jwt = localStorage.getItem('jwt');
@@ -107,7 +85,7 @@ function App() {
             }
           })
           .catch((err) => {
-            history.push('/sign-in')
+            // history.push('/sign-in')
             console.log(err);
           });
       }

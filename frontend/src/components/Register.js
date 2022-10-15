@@ -25,7 +25,6 @@ const Register = ({ onStatusChange }) => {
       .then((res) => {
         if (res) {
           onStatusChange('success');
-
           history.push('/sign-in');
         }
       })
