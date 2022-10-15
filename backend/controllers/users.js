@@ -4,6 +4,7 @@ const User = require('../models/user');
 const BadRequestError = require('../error/bad-request-errors');
 const EmailExistError = require('../error/email-exist-errors');
 const NotFoundError = require('../error/not-found-errors');
+const UnauthorizedError = require('../error/unauthorized-errors');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
@@ -78,13 +79,13 @@ module.exports.login = (req, res, next) => {
   User.findOne({ email }).select('+password')
     .then((user) => {
       if (!user) {
-        return next(new NotFoundError('Неправильная почта или пароль!'));
+        return next(new UnauthorizedError('Неправильная почта или пароль!'));
       }
       return bcrypt.compare(password, user.password)
         // eslint-disable-next-line consistent-return
         .then((matched) => {
           if (!matched) {
-            return next(new NotFoundError('Неправильная почта или пароль!'));
+            return next(new UnauthorizedError('Неправильная почта или пароль!'));
           }
           const token = jwt.sign(
             { _id: user._id },
