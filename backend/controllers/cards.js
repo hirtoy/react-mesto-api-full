@@ -21,7 +21,7 @@ module.exports.createCard = (req, res, next) => {
   const { name, link } = req.body;
 
   Card.create({ name, link, owner })
-    .then((card) => res.status(STATUS_CREATED).send({ data: card }))
+    .then((card) => res.send({ data: card }))
     .catch((error) => {
       if (error.name === 'ValidationError') {
         // eslint-disable-next-line new-cap

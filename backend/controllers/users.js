@@ -34,8 +34,7 @@ module.exports.getUser = (req, res, next) => {
     .then((user) => {
       if (!user) {
         throw new NotFoundError({ message: 'Не верные данные пользователя' });
-      }
-      res.status(STATUS_OK).send({ data: user });
+      } else res.send({ data: user });
     })
     .catch((error) => {
       if (error.name === 'CastError') {
