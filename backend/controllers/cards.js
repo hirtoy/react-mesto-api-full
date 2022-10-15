@@ -11,7 +11,7 @@ const {
 // отображение карточек на странице
 module.exports.getAllCards = (req, res, next) => {
   Card.find({})
-    .then((cards) => res.status(STATUS_OK).send({ data: cards }))
+    .then((cards) => res.send({ data: cards }))
     .catch(next);
 };
 

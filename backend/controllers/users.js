@@ -16,14 +16,14 @@ module.exports.getUserInfo = (req, res, next) => {
   const { _id } = req.user;
 
   User.findById({ _id })
-    .then((user) => res.status(STATUS_OK).send({ data: user }))
+    .then((user) => res.send({ data: user }))
     .catch(next);
 };
 
 module.exports.getAllUsers = (req, res, next) => {
   User.find({})
     .then((users) => {
-      res.status(STATUS_OK).send({ data: users });
+      res.send({ data: users });
     })
     .catch(next);
 };
@@ -75,13 +75,26 @@ module.exports.createUser = (req, res, next) => {
 
 module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
-
-  return User.findUserByCredentials(email, password)
+  User.findOne({ email }).select('+password')
     .then((user) => {
-      const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', { expiresIn: '7d' });
-      res.status(STATUS_OK).cookie('jwt', token, { maxAge: 3600000 * 24 * 7, httpOnly: true }).send({ token, message: 'Авторизация прошла успешно!' });
-    })
-    .catch(next);
+      if (!user) {
+        return next(new NotFoundError('Неправильная почта или пароль!'));
+      }
+      return bcrypt.compare(password, user.password)
+        // eslint-disable-next-line consistent-return
+        .then((matched) => {
+          if (!matched) {
+            return next(new NotFoundError('Неправильная почта или пароль!'));
+          }
+          const token = jwt.sign(
+            { _id: user._id },
+            NODE_ENV === 'production' ? JWT_SECRET : 'MY_SUPER_SECRET',
+            { expiresIn: '7d' },
+          );
+
+          res.send({ data: token });
+        });
+    });
 };
 
 module.exports.updateUser = (req, res, next) => {
