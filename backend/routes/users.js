@@ -27,7 +27,8 @@ routerUser.post('/signup', celebrate({
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
     avatar: Joi.string().regex(/^https?:\/\/(www.){0,1}([0-9a-zA-Z_-]+\.){1,3}[a-zA-Z]+[A-Za-z0-9-._~:/?#[\]@!$&'()*+,;=]+#?$/m),
-  }),
+  })
+    .unknown(true),
 }), createUser);
 
 routerUser.get('/users', auth, getAllUsers);
