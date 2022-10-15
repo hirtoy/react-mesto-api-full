@@ -36,8 +36,8 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 
 app.use(requestLogger);
 
-app.use((req, res, next) => {
-  next(new NotFoundError('Страница не найдена!'));
+app.all('/*', () => {
+  throw new NotFoundError('К сожалению, запращиваемый ресурс не найден');
 });
 
 app.use('/', auth, routerUser);
