@@ -5,7 +5,10 @@ class Api {
   }
 
   _checkResponse(res) {
-    res.ok ? res.json() : Promise.reject(res.status)
+    if (res.ok) {
+      return res.json();
+    }
+    return Promise.reject(`Ошибка: ${res.status}`);
   }
 
   getUserInfo() {
