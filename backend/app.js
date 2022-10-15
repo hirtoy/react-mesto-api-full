@@ -1,13 +1,12 @@
 const express = require('express');
+require('dotenv').config();
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-require('dotenv').config();
 const { errors } = require('celebrate');
-const { celebrate, Joi } = require('celebrate');
 const cors = require('cors');
 const userRoutes = require('./routes/users');
 const cardRoutes = require('./routes/cards');
-const { login, createUser } = require('./controllers/users');
+// const { login, createUser } = require('./controllers/users');
 const auth = require('./middelewares/auth');
 const NotFoundError = require('./error/not-found-err');
 const { requestLogger, errorLogger } = require('./middelewares/Logger');
@@ -34,31 +33,6 @@ app.get('/crash-test', () => {
 
 app.use('/users', auth, userRoutes);
 app.use('/cards', auth, cardRoutes);
-app.post(
-  '/signin',
-  celebrate({
-    body: Joi.object().keys({
-      email: Joi.string().required().email(),
-      password: Joi.string().required(),
-    }),
-  }),
-  login,
-);
-app.post(
-  '/signup',
-  celebrate({
-    body: Joi.object()
-      .keys({
-        name: Joi.string().min(2).max(30),
-        about: Joi.string().min(2).max(30),
-        avatar: Joi.string().uri().regex(/^https?:\/\/(www.){0,1}([0-9a-zA-Z_-]+\.){1,3}[a-zA-Z]+[A-Za-z0-9-._~:/?#[\]@!$&'()*+,;=]+#?$/m),
-        email: Joi.string().required().email(),
-        password: Joi.string().required(),
-      })
-      .unknown(true),
-  }),
-  createUser,
-);
 
 app.use((req, res, next) => {
   next(new NotFoundError('Страница не найдена!'));

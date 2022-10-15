@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
-// eslint-disable-next-line import/no-unresolved
+
 Joi.objectId = require('joi-objectid')(Joi);
 
 const {
