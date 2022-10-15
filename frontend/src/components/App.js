@@ -27,7 +27,7 @@ function App() {
   const [currentUser, setCurrentUser] = React.useState({});
   const [cards, setCards] = React.useState([]);
   const [email, setEmail] = React.useState('');
-  const [isRegistered, setIsRegistered] = React.useState(null);
+  const [isRegistered, setIsRegistered] = React.useState(false);
 
   const handleEditProfileClick = () => { setIsEditProfilePopupOpen(true); }
   const handleAddPlaceClick = () => { setIsAddPlacePopupOpen(true); }
@@ -38,19 +38,8 @@ function App() {
   const history = useHistory();
 
   React.useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      Auth.checkToken(token).then((data) => {
-        if (data) {
-          setEmail(data.email);
-          setLoggedIn(true);
-          history.push("/");
-        } else {
-          console.log("error");
-        }
-      });
-    }
-  }, [history, isLoggedIn]);
+    handleTokenCheck()
+  }, [handleTokenCheck]);
 
 
   const closeAllPopups = () => {
@@ -111,70 +100,62 @@ function App() {
   }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  React.useEffect(() => {
-    const token = localStorage.getItem("token");
+  function handleTokenCheck() {
+    const token = localStorage.getItem('jwt');
     if (token) {
-      Api.checkToken(token)
-        .then((data) => {
-          setCurrentUser(data);
-          console.log(data);
+      Auth.checkToken(token)
+        .then((res) => {
+          if (res) {
+            handleLogin(res.data.email);
+          }
         })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
-  }, [isLoggedIn]);
+        .catch(console.error)
+    };
+  }
 
-  function handleRegister({ email, password }) {
+  function handleRegister(email, password) {
     Auth.register(email, password)
       .then((res) => {
-        if (res) {
-          setIsRegistered(true);
-          handleInfoTolltipOpen(true);
-        } else {
-          setIsRegistered(false);
-          handleInfoTolltipOpen(true);
-        }
+        setIsRegistered(!res.error);
+
+      })
+      .catch(err => {
+        console.log(err);
+        setIsRegistered(false);
+        handleInfoTolltipOpen(true);
       });
   }
 
-  function handleAuthorize({ email, password }) {
+  function handleAuthorize(email, password) {
     Auth.authorize(email, password)
-      .then((res) => {
-        if (res) {
-          setLoggedIn(true);
-          setEmail(email);
+      .then((data) => {
+        if (data.token) {
+          localStorage.setItem('jwt', data.token);
+          handleLogin(email);
           history.push("/");
-        } else {
-          setIsRegistered(false);
-          setIsInfoTooltipOpen(true);
         }
       })
+      .catch(console.error)
   }
-
-  React.useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      Api
-        .getInitialCards(token)
-        .then((data) => {
-          console.log("cards", data);
-          setCards(data);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
-  }, [setLoggedIn]);
 
   function handleSignOut() {
     setCards([]);
     setEmail('');
-    localStorage.removeItem("token");
+    localStorage.removeItem('jwt');
   }
 
-  function handleLogin() {
+  function handleLogin(email) {
+    setEmail(email);
     setLoggedIn(true);
+    history.push('/main')
+    Promise.all([Api.getProfile(), Api.getInitialCards()])
+      .then(([profile, cards]) => {
+        //отображаем информацию профиля    
+        setCurrentUser(profile);
+        //рисуем все карточки
+        setCards(cards);
+      })
+      .catch(console.error)
   }
 
 
@@ -208,7 +189,7 @@ function App() {
         </Route>
 
         <Route exact path="/">
-          {handleLogin ? <Redirect to="/" /> : <Redirect to="/sign-in" />}
+          {isLoggedIn ? <Redirect to="/main" /> : <Redirect to="/sign-in" />}
         </Route>
 
       </Switch>

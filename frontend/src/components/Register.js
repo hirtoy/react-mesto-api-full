@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, withRouter } from 'react-router-dom';
 
-function Register({ onRegister }) {
+function Register(props) {
     const [email, setEmail] = React.useState('');
     const [password, setPassword] = React.useState('');
 
@@ -10,7 +10,7 @@ function Register({ onRegister }) {
 
     function handleSubmit(event) {
         event.preventDefault();
-        onRegister({ email, password });
+        props.onRegister(email, password);
     }
 
     return (
@@ -18,7 +18,6 @@ function Register({ onRegister }) {
             <h2 className="entrance__heading">Регистрация</h2>
             <form action="" className="form" onSubmit={handleSubmit}>
                 <input
-                    id="email"
                     name="email"
                     className="form__input"
                     required
@@ -26,11 +25,8 @@ function Register({ onRegister }) {
                     placeholder="Email"
                     onChange={handlMailChange}
                     value={email}
-                    minLength="6"
-                    maxLength="20"
                 />
                 <input
-                    id="password"
                     name="password"
                     className="form__input"
                     required
@@ -38,8 +34,6 @@ function Register({ onRegister }) {
                     placeholder="Пароль"
                     onChange={handlPasswordChange}
                     value={password}
-                    minLength="6"
-                    maxLength="20"
                 />
                 <button
                     className="entrance__button"
@@ -49,7 +43,7 @@ function Register({ onRegister }) {
             </form>
             <p className="entrance__text">
                 Уже зарегистрированы?
-                <Link to="/sign-in" className="entrance__link"> Войти</Link>
+                <Link to="sign-in" className="entrance__link"> Войти</Link>
             </p>
         </div>
     );

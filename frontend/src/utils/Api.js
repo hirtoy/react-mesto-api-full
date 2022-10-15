@@ -1,7 +1,7 @@
 class mestoApi {
-    constructor(options) {
-        this._url = options.baseUrl;
-        this._headers = options.headers;
+    constructor(params) {
+        this._url = params.baseUrl;
+        this._headers = params.headers;
     }
 
     _checkResponse(res) {
@@ -15,40 +15,49 @@ class mestoApi {
     getProfile() {
         return fetch(
             `${this._url}/users/me`, {
-            headers: { ...this._headers, authorization: getToken() },
-            credentials: 'include',
-        }).then(this._checkResponse);
+            method: 'GET',
+            headers: this._headers
+        }
+        )
+            .then(this._checkResponse);
     }
 
     // обновление данных пользоателя
-    patchProfile() {
+    patchProfile(name, about) {
         return fetch(
             `${this._url}/users/me`, {
-            headers: { ...this._headers, authorization: getToken() },
-            credentials: 'include',
-        }).then(this._checkResponse);
+            method: 'PATCH',
+            headers: this._headers,
+            body: JSON.stringify({
+                name: name,
+                about: about
+            })
+        }
+        )
+            .then(res => this._checkResponse(res));
     }
+
     // обновление фото пользоателя
     patchProfilePhoto(link) {
         return fetch(
             `${this._url}/users/me/avatar`, {
             method: 'PATCH',
-            credentials: 'include',
-            headers: { ...this._headers, authorization: getToken() },
-            body: JSON.stringify({ link: link }),
-        }).then(this._checkResponse);
+            headers: this._headers,
+            body: JSON.stringify({
+                avatar: link
+            })
+        }
+        )
+            .then(res => this._checkResponse(res));
     }
 
 
     //запрашиваем массив карточек с сервера
-    getInitialCards(token) {
+    getInitialCards() {
         return fetch(
             `${this._url}/cards`, {
             method: 'GET',
-            headers: {
-                "Content-Type": "application/json",
-                authorization: `Bearer ${token}`
-            },
+            headers: this._headers
         }
         )
             .then(res => this._checkResponse(res));
@@ -59,28 +68,30 @@ class mestoApi {
         return fetch(
             `${this._url}/cards`, {
             method: 'POST',
-            credentials: 'include',
-            headers: { ...this._headers, authorization: getToken() },
-            body: JSON.stringify({ name: name, link: link }),
-        }).then(this._checkResponse);
+            headers: this._headers,
+            body: JSON.stringify({
+                name: name,
+                link: link
+            })
+        }
+        )
+            .then(res => this._checkResponse(res));
     }
 
     like(_id) {
         return fetch(`${this._url}/cards/likes/${_id}`, {
             method: 'PUT',
-            credentials: 'include',
-            headers: { ...this._headers, authorization: getToken() },
+            headers: this._headers
         })
-            .then(this._checkResponse);
+            .then(res => this._checkResponse(res));
     }
 
     dislike(_id) {
         return fetch(`${this._url}/cards/likes/${_id}`, {
             method: 'DELETE',
-            credentials: 'include',
-            headers: { ...this._headers, authorization: getToken() },
+            headers: this._headers
         })
-            .then(this._checkResponse);
+            .then(res => this._checkResponse(res));
     }
 
 
@@ -88,9 +99,10 @@ class mestoApi {
         return fetch(
             `${this._url}/cards/${_id}`, {
             method: 'DELETE',
-            credentials: 'include',
-            headers: { ...this._headers, authorization: getToken() },
-        }).then(this._checkResponse);
+            headers: this._headers
+        }
+        )
+            .then(res => this._checkResponse(res));
     }
 
     //обновляем статус карточки
@@ -102,39 +114,34 @@ class mestoApi {
         }
     }
 
+    //установить лайк на карточку
+    _addLike(_id) {
+        return fetch(
+            `${this._url}/cards/likes/${_id}`,
+            {
+                method: 'PUT',
+                headers: this._headers
+            }
+        )
+            .then(res => this._checkResponse(res));
+    }
 
-    //     //установить лайк на карточку
-    //     _addLike(_id) {
-    //         return fetch(
-    //             `${this._url}/cards/likes/${_id}`,
-    //             {
-    //                 method: 'PUT',
-    //                 headers: this._headers,
-    //             }
-    //         )
-    //             .then(res => this._checkResponse(res));
-    //     }
-
-    //     //снять лайк с карточки
-    //     _removeLike(_id) {
-    //         return fetch(
-    //             `${this._url}/cards/likes/${_id}`,
-    //             {
-    //                 method: 'DELETE',
-    //                 headers: this._headers,
-    //             }
-    //         )
-    //             .then(res => this._checkResponse(res));
-    //     }
-}
-const getToken = () => {
-    return `Bearer ${localStorage.getItem('jwt')}`;
+    //снять лайк с карточки
+    _removeLike(_id) {
+        return fetch(
+            `${this._url}/cards/likes/${_id}`,
+            {
+                method: 'DELETE',
+                headers: this._headers
+            }
+        )
+            .then(res => this._checkResponse(res));
+    }
 }
 
 const Api = new mestoApi({
     baseUrl: "https://api.chirick.nomoredomains.icu",
     headers: {
-        // authorization: "497373c8-3f58-4b67-8592-c177fbd661e3",
         "Content-Type": "application/json",
     },
 });

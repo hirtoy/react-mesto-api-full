@@ -6,9 +6,9 @@ const { NODE_ENV, JWT_SECRET } = process.env;
 
 // eslint-disable-next-line consistent-return
 module.exports = (req, res, next) => {
-  const { authorization } = req.headers;
+  const { authorization } = req.cookies;
 
-  if (!authorization || !authorization.startsWith('Bearer ')) {
+  if (!authorization) {
     next(new UnauthorizedError('Необходима авторизация'));
     return;
   }
@@ -19,6 +19,7 @@ module.exports = (req, res, next) => {
   try {
     payload = jwt.verify(token, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret');
   } catch (error) {
+    // eslint-disable-next-line new-cap
     next(new UnauthorizedError('Необходима авторизация'));
     return;
   }
