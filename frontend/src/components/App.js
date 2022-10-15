@@ -38,8 +38,19 @@ function App() {
   const history = useHistory();
 
   React.useEffect(() => {
-    handleTokenCheck()
-  }, [handleTokenCheck]);
+    const token = localStorage.getItem('jwt');
+    if (token) {
+      Auth.checkToken(token).then((data) => {
+        if (data) {
+          setEmail(data.email);
+          setLoggedIn(true);
+          history.push("/");
+        } else {
+          console.log("error");
+        }
+      });
+    }
+  }, [history, isLoggedIn]);
 
 
   const closeAllPopups = () => {
@@ -100,20 +111,6 @@ function App() {
   }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  function handleTokenCheck() {
-    const token = localStorage.getItem('jwt');
-    if (token) {
-      Auth.checkToken(token).then((data) => {
-        if (data) {
-          setEmail(data.email);
-          setLoggedIn(true);
-          history.push("/");
-        } else {
-          console.log("error");
-        }
-      });
-    }
-  }
 
   function handleRegister(email, password) {
     Auth.register(email, password)
