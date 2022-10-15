@@ -1,6 +1,6 @@
 import React from 'react';
 
-function LogIn(onAuthorise) {
+function LogIn(props) {
     const [email, setEmail] = React.useState('');
     const [password, setPassword] = React.useState('');
 
@@ -9,7 +9,7 @@ function LogIn(onAuthorise) {
 
     function handleAuthorize(event) {
         event.preventDefault();
-        onAuthorise({ email, password });
+        props.onAuthorise(email, password);
     }
 
     return (
