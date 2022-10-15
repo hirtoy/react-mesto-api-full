@@ -3,7 +3,8 @@ const { celebrate, Joi } = require('celebrate');
 const {
   getUsers, getUserById, getAboutUser, updateUser, updateAvatar, login, createUser,
 } = require('../controllers/users');
-const { validate } = require('../utils/validate');
+// const { validate } = require('../utils/validate');
+Joi.objectId = require('joi-objectid')(Joi);
 
 router.get('/', getUsers);
 
@@ -11,7 +12,7 @@ router.get('/me', getAboutUser);
 
 router.get('/:id', celebrate({
   params: Joi.object().keys({
-    userId: Joi.string().custom(validate, 'ObjectId validation'),
+    id: Joi.objectId(),
   }),
 }), getUserById);
 
