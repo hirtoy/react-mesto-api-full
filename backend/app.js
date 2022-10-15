@@ -37,13 +37,12 @@ app.use(requestLogger);
 
 app.use(routerUser);
 app.use(routerCards);
+app.use((req, res, next) => next(new NotFoundError(errors.ERROR_BAD_REQUEST)));
 
 app.use(errors());
 app.use(errorLogger);
 
 app.use(errorHandler);
-
-app.use((req, res, next) => next(new NotFoundError(errors.ERROR_BAD_REQUEST)));
 
 // eslint-disable-next-line no-console
 app.listen(PORT, () => { console.log(`Сервер запущен на порту ${PORT}`); });
