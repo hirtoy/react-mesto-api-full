@@ -9,7 +9,6 @@ const UnauthorizedError = require('../error/unauthorized-errors');
 const { NODE_ENV, JWT_SECRET } = process.env;
 
 const {
-  STATUS_CREATED,
   STATUS_OK,
 } = require('../utils/constants');
 
@@ -17,14 +16,14 @@ module.exports.getUserInfo = (req, res, next) => {
   const { _id } = req.user;
 
   User.findById({ _id })
-    .then((user) => res.send({ data: user }))
+    .then((user) => res.send(user))
     .catch(next);
 };
 
 module.exports.getAllUsers = (req, res, next) => {
   User.find({})
     .then((users) => {
-      res.send({ data: users });
+      res.send(users);
     })
     .catch(next);
 };
@@ -35,7 +34,7 @@ module.exports.getUser = (req, res, next) => {
     .then((user) => {
       if (!user) {
         throw new NotFoundError({ message: 'Не верные данные пользователя' });
-      } else res.send({ data: user });
+      } else res.send(user);
     })
     .catch((error) => {
       if (error.name === 'CastError') {
@@ -56,10 +55,10 @@ module.exports.createUser = (req, res, next) => {
         name, about, avatar, email, password: hash,
       },
     ))
-    .then((user) => {
-      const userWithOutPassword = user.toObject();
-      delete userWithOutPassword.password;
-      res.status(STATUS_CREATED).send(userWithOutPassword);
+    .then((result) => {
+      res.send({
+        _id: result._id, name, about, avatar, email,
+      });
     })
     .catch((error) => {
       if (error.name === 'ValidationError') {
@@ -93,7 +92,7 @@ module.exports.login = (req, res, next) => {
             { expiresIn: '7d' },
           );
 
-          res.send({ data: token });
+          res.status(STATUS_OK).send({ token });
         });
     });
 };
