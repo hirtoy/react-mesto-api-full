@@ -5,22 +5,22 @@ class Api {
   }
 
   _checkResponse(res) {
-    if (res.ok) {
-      return res.json();
-    }
-    return Promise.reject(`Ошибка: ${res.status}`);
+    res.ok ? res.json() : Promise.reject(res.status)
   }
 
   getUserInfo() {
     return fetch(`${this._baseURL}/users/me`, {
-      headers: {...this._headers, authorization: getToken()},
+      headers: {
+        ...this._headers,
+        authorization: getToken()
+      },
       credentials: 'include',
     }).then(this._checkResponse);
   }
 
   getInitialCards() {
     return fetch(`${this._baseURL}/cards`, {
-      headers: {...this._headers, authorization: getToken()},
+      headers: { ...this._headers, authorization: getToken() },
       credentials: 'include',
     }).then(this._checkResponse);
   }
@@ -29,7 +29,7 @@ class Api {
     return fetch(`${this._baseURL}/users/me`, {
       method: 'PATCH',
       credentials: 'include',
-      headers: {...this._headers, authorization: getToken()},
+      headers: { ...this._headers, authorization: getToken() },
       body: JSON.stringify({ name, about: job }),
     }).then(this._checkResponse);
   }
@@ -38,7 +38,7 @@ class Api {
     return fetch(`${this._baseURL}/cards`, {
       method: 'POST',
       credentials: 'include',
-      headers: {...this._headers, authorization: getToken()},
+      headers: { ...this._headers, authorization: getToken() },
       body: JSON.stringify({ name: place, link: href }),
     }).then(this._checkResponse);
   }
@@ -47,15 +47,15 @@ class Api {
     return fetch(`${this._baseURL}/cards/${id}`, {
       method: 'DELETE',
       credentials: 'include',
-      headers: {...this._headers, authorization: getToken()},
+      headers: { ...this._headers, authorization: getToken() },
     }).then(this._checkResponse);
   }
 
-  editUserAvatar({avatar}) {
+  editUserAvatar({ avatar }) {
     return fetch(`${this._baseURL}/users/me/avatar`, {
       method: 'PATCH',
       credentials: 'include',
-      headers: {...this._headers, authorization: getToken()},
+      headers: { ...this._headers, authorization: getToken() },
       body: JSON.stringify({ avatar: avatar }),
     }).then(this._checkResponse);
   }
@@ -64,19 +64,19 @@ class Api {
     return fetch(`${this._baseURL}/cards/${id}/likes`, {
       method: isLiked ? 'PUT' : 'DELETE',
       credentials: 'include',
-      headers: {...this._headers, authorization: getToken()},
+      headers: { ...this._headers, authorization: getToken() },
     }).then(this._checkResponse);
   }
 }
 
-const getToken = ()=> {
+const getToken = () => {
   return `Bearer ${localStorage.getItem('jwt')}`;
 }
 
 const api = new Api({
   baseURL: "https://api.chirick.nomoredomains.icu",
   headers: {
-      "Content-Type": "application/json",
+    "Content-Type": "application/json",
   },
 });
 
