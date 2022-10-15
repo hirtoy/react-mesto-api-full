@@ -116,11 +116,10 @@ function App() {
   function handleRegister(email, password) {
     Auth.register(email, password)
       .then((res) => {
-        setIsRegistered(!res.error);
-
+        setIsRegistered(true);
+        handleInfoTolltipOpen(true);
       })
       .catch(err => {
-        console.log(err);
         setIsRegistered(false);
         handleInfoTolltipOpen(true);
       });
