@@ -103,14 +103,16 @@ function App() {
   function handleTokenCheck() {
     const token = localStorage.getItem('jwt');
     if (token) {
-      Auth.checkToken(token)
-        .then((res) => {
-          if (res) {
-            handleLogin(res.data.email);
-          }
-        })
-        .catch(console.error)
-    };
+      Auth.checkToken(token).then((data) => {
+        if (data) {
+          setEmail(data.email);
+          setLoggedIn(true);
+          history.push("/");
+        } else {
+          console.log("error");
+        }
+      });
+    }
   }
 
   function handleRegister(email, password) {
