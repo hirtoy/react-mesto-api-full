@@ -1,6 +1,6 @@
 class mestoApi {
     constructor(options) {
-        this._url = options.baseURL;
+        this._url = options.baseUrl;
         this._headers = options.headers;
     }
 
@@ -21,7 +21,7 @@ class mestoApi {
     }
 
     // обновление данных пользоателя
-    patchProfile(name, about) {
+    patchProfile() {
         return fetch(
             `${this._url}/users/me`, {
             headers: { ...this._headers, authorization: getToken() },
