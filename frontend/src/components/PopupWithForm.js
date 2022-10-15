@@ -1,24 +1,28 @@
-import React from 'react';
-
 function PopupWithForm(props) {
+  const { title, name, buttonText, children, isOpen, onClose, onSubmit } =
+    props;
 
-    function handleOverlayClick(evt) {
-        if (evt.target === evt.currentTarget) { props.onClose() };
-    }
+  const classList = `popup popup_${name} ${isOpen && 'popup_opened'}`;
 
-    return (
-        //редактирование профиля
-        <div className={`popup popup_type_${props.name} ${props.isOpen && 'popup_visible'}`} onClick={handleOverlayClick}>
-            <div className="popup__window">
-                <form className="popup__form" name={`${props.name}-form`} onSubmit={props.onSubmit} method="post">
-                    <h2 className="popup__heading">{props.title}</h2>
-                    {props.children}
-                    <button className="popup__submit-button popup__profile-submit" type="submit">{props.buttonText}</button>
-                </form>
-                <button type="button" className="popup__close-button" onClick={props.onClose}></button>
-            </div>
-        </div>
-    );
+  return (
+    <div className={classList}>
+      <div className="popup__container">
+        <button onClick={onClose} className="popup__close" type="button" />
+        <form
+          onSubmit={onSubmit}
+          className={`popup__form popup__form_type_${name}`}
+          name="form"
+          noValidate
+        >
+          <h3 className="popup__title">{title}</h3>
+          {children}
+          <button className="popup__submit" type="submit">
+            {buttonText}
+          </button>
+        </form>
+      </div>
+    </div>
+  );
 }
 
 export default PopupWithForm;

@@ -1,45 +1,62 @@
-export const BASE_URL = 'https://api.chirick.nomoredomains.icu';
+import { API_CONFIG } from './constants';
+const BASE_URL = API_CONFIG.baseURL;
 
-const checkResponse = (res) =>
-res.ok ? res.json() : Promise.reject(`Ошибка: ${res.status}`);
-
-export function register(email, password) {
-    return fetch(`${BASE_URL}/signup`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({email, password})
+export const register = (email, password) => {
+  return fetch(`${BASE_URL}/signup`, {
+    method: 'POST',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ email, password }),
+  })
+    .then((res) => {
+      if (res.status === 400) {
+        throw new Error('Bad response from server');
+      }
+      if (res.status === 409) {
+        throw new Error('Такой пользователь уже существует');
+      }
+      return res.json();
     })
-    .then(checkResponse)
-    .catch((err) => {
-      console.log(err)
-    })
+    .then((res) => {
+      return res;
+    });
 };
 
-export function authorize(email, password) {
-    return fetch(`${BASE_URL}/signin`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({email, password})
-    })
-    .catch((err) => console.log(err));
-};
-
-export function checkToken(token) {
-    return fetch(
-        `${BASE_URL}/users/me`, 
-        {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`,
-            }
-        }
-    )
+export const autorise = (email, password) => {
+  return fetch(`${BASE_URL}/signin`, {
+    method: 'POST',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ email, password }),
+  })
     .then((res) => res.json())
+    .then((res) => {
+      if (res) {
+        console.log('token', res.data)
+        localStorage.setItem('jwt', res.data);
+        return res.data;
+      }
+    });
+};
 
-    .catch((err) => console.log(err));
-}
+export const getContent = (token) => {
+  return fetch(`${BASE_URL}/users/me`, {
+    method: 'GET',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+      'authorization': `Bearer ${token}`,
+    },
+  })
+    .then((res) => {
+      if (res.status === 401) {
+        throw new Error('Invalid token');
+      }
+      return res.json()
+    })
+    .then((data) => data);
+};

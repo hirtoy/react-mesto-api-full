@@ -1,8 +1,16 @@
 .page {
-    background-color: black;
-    font-family: 'Inter', Arial, sans-serif;
-    box-sizing: border-box;
+    min-width: 282px;
     max-width: 880px;
     margin: 0 auto;
-    height: 100%;
+    padding-top: 45px;
+    padding-bottom: 60px;
+    box-sizing: border-box;
 }
+
+
+@media screen and (max-width: 800px) { 
+    .page { 
+        padding-top: 28px;
+        padding-bottom: 36px;
+    } 
+} 

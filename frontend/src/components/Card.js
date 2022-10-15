@@ -1,39 +1,59 @@
 import React from 'react';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
-function Card(props) {
+function Card({ card, onClick, onCardLike, onCardDelete }) {
+  function handleClick() {
+    onClick(card);
+  }
+  function handleLikeClick() {
+    onCardLike(card);
+  }
+
+  function handleDeleteClick() {
+    onCardDelete(card);
+  }
+
   const currentUser = React.useContext(CurrentUserContext);
-  const isOwn = props.card.owner._id === currentUser._id;
-  const isLiked = props.card.likes.some(i => i._id === currentUser._id);
+  
+  const isOwn = card.owner === currentUser._id;
 
-  const cardDeleteButtonClassName = (
-    `element__remove-button element__remove-button${!isOwn && '_hidden'}`
-  );
+  const isLiked = card.likes.some((i) => i === currentUser._id);
 
-  const LikesButtonClassName = (
-    `element__heart-icon ${isLiked ? 'element__heart-icon_active' : ''}`
-  );
-
-  function handleCardClick() {
-    props.onCardClick(props.card);
-  }
-
-  function handleDeleteCard() {
-    props.onCardDelete(props.card)
-  }
+  const cardLikeButtonClassName = `element__group ${
+    isLiked ? ' element__group_active' : ' '
+  }`;
 
   return (
-    <div className="element">
-      <button className={cardDeleteButtonClassName} type="button" onClick={handleDeleteCard}></button>
-      <img className="element__image" src={props.card.link} alt={props.card.name} onClick={handleCardClick} />
-      <div className="element__info">
-        <h2 className="element__title">{props.card.name}</h2>
-        <div className="element__likes-counter">
-          <button className={LikesButtonClassName} type="button" onClick={() => { props.onCardLike(props.card) }}></button>
-          <p className="element__heart-counter">{props.card.likes.length}</p>
+    <li className="element">
+      <div className="element__container">
+        <img
+          onClick={handleClick}
+          className="element__mask-group"
+          src={card.link}
+          alt={card.name}
+        />
+        {isOwn && (
+          <button
+            className="element__basket"
+            type="button"
+            aria-label="Удалить фото"
+            onClick={handleDeleteClick}
+          />
+        )}
+      </div>
+      <div className="element__sign">
+        <h2 className="element__text">{card.name}</h2>
+        <div className="element__square">
+          <button
+            onClick={handleLikeClick}
+            className={cardLikeButtonClassName}
+            type="button"
+            aria-label="Поставить лайк"
+          />
+          <div className="element__counter">{card.likes.length}</div>
         </div>
       </div>
-    </div>
+    </li>
   );
 }
 

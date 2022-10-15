@@ -1,149 +1,80 @@
-class mestoApi {
-    constructor(params) {
-        this._url = params.baseUrl;
-        this._headers = params.headers;
+import { API_CONFIG } from './constants';
+
+class Api {
+  constructor(options) {
+    this._baseURL = options.baseURL;
+    this._headers = options.headers;
+  }
+
+  _checkResponse(res) {
+    if (res.ok) {
+      return res.json();
     }
+    return Promise.reject(`Ошибка: ${res.status}`);
+  }
 
-    _checkResponse(res) {
-        if (res.ok) {
-            return res.json();
-        }
-        return Promise.reject(`Error: ${res.status}`);
-    }
+  getUserInfo() {
+    return fetch(`${this._baseURL}/users/me`, {
+      headers: {...this._headers, authorization: getToken()},
+      credentials: 'include',
+    }).then(this._checkResponse);
+  }
 
-    //загрузка данных профиля
-    getProfile() {
-        return fetch(
-            `${this._url}/users/me`, {
-            method: 'GET',
-            headers: this._headers
-        }
-        )
-            .then(this._checkResponse);
-    }
+  getInitialCards() {
+    return fetch(`${this._baseURL}/cards`, {
+      headers: {...this._headers, authorization: getToken()},
+      credentials: 'include',
+    }).then(this._checkResponse);
+  }
 
-    // обновление данных пользоателя
-    patchProfile(name, about) {
-        return fetch(
-            `${this._url}/users/me`, {
-            method: 'PATCH',
-            headers: this._headers,
-            body: JSON.stringify({
-                name: name,
-                about: about
-            })
-        }
-        )
-            .then(res => this._checkResponse(res));
-    }
+  updateProfile({ name, job }) {
+    return fetch(`${this._baseURL}/users/me`, {
+      method: 'PATCH',
+      credentials: 'include',
+      headers: {...this._headers, authorization: getToken()},
+      body: JSON.stringify({ name, about: job }),
+    }).then(this._checkResponse);
+  }
 
-    // обновление фото пользоателя
-    patchProfilePhoto(link) {
-        return fetch(
-            `${this._url}/users/me/avatar`, {
-            method: 'PATCH',
-            headers: this._headers,
-            body: JSON.stringify({
-                avatar: link
-            })
-        }
-        )
-            .then(res => this._checkResponse(res));
-    }
+  addNewCard({ place, href }) {
+    return fetch(`${this._baseURL}/cards`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {...this._headers, authorization: getToken()},
+      body: JSON.stringify({ name: place, link: href }),
+    }).then(this._checkResponse);
+  }
 
+  deleteOwnCard(id) {
+    return fetch(`${this._baseURL}/cards/${id}`, {
+      method: 'DELETE',
+      credentials: 'include',
+      headers: {...this._headers, authorization: getToken()},
+    }).then(this._checkResponse);
+  }
 
-    //запрашиваем массив карточек с сервера
-    getInitialCards() {
-        return fetch(
-            `${this._url}/cards`, {
-            method: 'GET',
-            headers: this._headers
-        }
-        )
-            .then(res => this._checkResponse(res));
-    }
+  editUserAvatar({avatar}) {
+    return fetch(`${this._baseURL}/users/me/avatar`, {
+      method: 'PATCH',
+      credentials: 'include',
+      headers: {...this._headers, authorization: getToken()},
+      body: JSON.stringify({ avatar: avatar }),
+    }).then(this._checkResponse);
+  }
 
-    //создаём новую карточку
-    createNewCard(name, link) {
-        return fetch(
-            `${this._url}/cards`, {
-            method: 'POST',
-            headers: this._headers,
-            body: JSON.stringify({
-                name: name,
-                link: link
-            })
-        }
-        )
-            .then(res => this._checkResponse(res));
-    }
-
-    like(_id) {
-        return fetch(`${this._url}/cards/likes/${_id}`, {
-            method: 'PUT',
-            headers: this._headers
-        })
-            .then(res => this._checkResponse(res));
-    }
-
-    dislike(_id) {
-        return fetch(`${this._url}/cards/likes/${_id}`, {
-            method: 'DELETE',
-            headers: this._headers
-        })
-            .then(res => this._checkResponse(res));
-    }
-
-
-    deleteCard(_id) {
-        return fetch(
-            `${this._url}/cards/${_id}`, {
-            method: 'DELETE',
-            headers: this._headers
-        }
-        )
-            .then(res => this._checkResponse(res));
-    }
-
-    //обновляем статус карточки
-    updateLikeStatus(_id, isLiked) {
-        if (isLiked) {
-            return this._addLike(_id);
-        } else {
-            return this._removeLike(_id);
-        }
-    }
-
-    //установить лайк на карточку
-    _addLike(_id) {
-        return fetch(
-            `${this._url}/cards/likes/${_id}`,
-            {
-                method: 'PUT',
-                headers: this._headers
-            }
-        )
-            .then(res => this._checkResponse(res));
-    }
-
-    //снять лайк с карточки
-    _removeLike(_id) {
-        return fetch(
-            `${this._url}/cards/likes/${_id}`,
-            {
-                method: 'DELETE',
-                headers: this._headers
-            }
-        )
-            .then(res => this._checkResponse(res));
-    }
+  changeCardLike(id, isLiked) {
+    return fetch(`${this._baseURL}/cards/${id}/likes`, {
+      method: isLiked ? 'PUT' : 'DELETE',
+      credentials: 'include',
+      headers: {...this._headers, authorization: getToken()},
+    }).then(this._checkResponse);
+  }
 }
 
-const Api = new mestoApi({
-    baseUrl: "https://api.chirick.nomoredomains.icu",
-    headers: {
-        "Content-Type": "application/json",
-    },
-});
+const getToken = ()=> {
+  return `Bearer ${localStorage.getItem('jwt')}`;
+}
 
-export default Api;
+const api = new Api(API_CONFIG);
+
+export default api;

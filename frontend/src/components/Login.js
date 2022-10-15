@@ -1,27 +1,75 @@
-import React from 'react';
+import { React, useState } from 'react';
+import { useHistory, Link } from 'react-router-dom';
+import Header from './Header';
+import * as auth from '../utils/Auth';
+import '../styles/Register.css';
 
-function LogIn(props) {
-    const [email, setEmail] = React.useState('');
-    const [password, setPassword] = React.useState('');
+const Login = ({ handleLogin }) => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [message, setMessage] = useState('');
 
-    function handleEmailChange(event) { setEmail(event.target.value) };
-    function handlePasswordChange(event) { setPassword(event.target.value) };
+  const history = useHistory();
 
-    function handleAuthorize(event) {
-        event.preventDefault();
-        props.onAuthorise(email, password);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!email || !password) {
+      return;
     }
+    auth
+      .autorise(email, password)
+      .then((data) => {
+        setEmail('');
+        setPassword('');
+        handleLogin();
+        history.push('/');
+      })
+      .catch((err) => {
+        console.log(err);
+        setMessage('Что-то пошло не так! Попробуйте еще раз!');
+      });
+  };
 
-    return (
-        <div className="entrance">
-            <h2 className="entrance__heading">Вход</h2>
-            <form action="" className="form" onSubmit={handleAuthorize}>
-                <input className="form__input" type="email" value={email} required placeholder="Email" onChange={handleEmailChange} />
-                <input className="form__input" type="password" value={password} required placeholder="Пароль" onChange={handlePasswordChange} />
-                <button className="entrance__button" type="submit">Войти</button>
-            </form>
-        </div>
-    );
-}
+  return (
+    <>
+      <Header>
+        <Link className="header__link" to="/sign-up">
+          Регистрация
+        </Link>
+      </Header>
+      <div className="register">
+        <p className="register__welcome">Вход</p>
+        <p className="register__error">{message}</p>
+        <form className="register__form" onSubmit={handleSubmit}>
+          <input
+            className="register__input"
+            id="email"
+            name="email"
+            value={email}
+            type="email"
+            placeholder="Email"
+            onChange={(e) => {
+              setEmail(e.target.value);
+            }}
+          />
+          <input
+            className="register__input"
+            id="password"
+            name="password"
+            value={password}
+            type="password"
+            placeholder="Пароль"
+            onChange={(e) => {
+              setPassword(e.target.value);
+            }}
+          />
+          <button type="submit" className="register__submit">
+            Войти
+          </button>
+        </form>
+      </div>
+    </>
+  );
+};
 
-export default LogIn;
+export default Login;

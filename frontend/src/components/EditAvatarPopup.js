@@ -1,43 +1,40 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import PopupWithForm from './PopupWithForm';
 
+function EditAvatarPopup(props) {
+  const { isOpen, onClose, onUpdateAvatar } = props;
 
-function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar }) {
-    const avatarUrl = React.useRef();
+  const avatarRef = useRef();
 
-    function handleSubmit(event) {
-        event.preventDefault();
-        onUpdateAvatar(avatarUrl.current.value);
-    }
-
-    React.useEffect(
-        () => {
-            avatarUrl.current.value = "";
-        }, [isOpen]
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onUpdateAvatar(
+      avatarRef.current.value /* Значение инпута, полученное с помощью рефа */
     );
+    avatarRef.current.value = '';
+  };
 
-    return (
-        <PopupWithForm
-            title="Обновить аватар"
-            name="avatar"
-            isOpen={isOpen}
-            onClose={onClose}
-            onSubmit={handleSubmit}
-            buttonText="Сохранить">
-
-            <label className="popup__field">
-                <input className="popup__form-item popup__form-item_place_elements popup__form-item_value_place-avatar"
-                    id="avatar-input"
-                    name="avatar"
-                    type="url"
-                    placeholder="Ссылка на аватарку"
-                    required
-                    ref={avatarUrl} />
-                <span className="popup__form-error avatar-input-error"></span>
-            </label>
-        </PopupWithForm>
-    )
-
+  return (
+    <PopupWithForm
+      title="Обновить аватар"
+      name="update"
+      buttonText="Сохранить"
+      isOpen={isOpen}
+      onClose={onClose}
+      onSubmit={handleSubmit}
+    >
+      <input
+        id="link-input"
+        className="popup__input popup__input_type_update"
+        type="url"
+        name="href"
+        placeholder="Ссылка на картинку"
+        required
+        ref={avatarRef}
+      />
+      <span className="link-input-error popup__input-error"></span>
+    </PopupWithForm>
+  );
 }
 
 export default EditAvatarPopup;

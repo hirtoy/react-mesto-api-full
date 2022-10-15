@@ -1,22 +1,35 @@
-import React from 'react';
-import ok from '../images/ok.svg';
-import err from '../images/ok_icon.svg';
+import '../styles/InfoToolTip.css';
+import checkMark from '../images/Check_mark.svg';
+import closeCross from '../images/Close_cross.svg';
 
-function InfoTooltip({ isOpen, isRegisered, onClose}) {
+const InfoToolTip = (props) => {
+  const { onStatusChange, registerStatus } = props;
+  const classList = `popup popup_tooltip ${
+    registerStatus ? 'popup_opened' : ''
+  }`;
+  return (
+    <div className={classList}>
+      <div className="popup__container popup__container_type_tooltip">
+        <button
+          onClick={() => onStatusChange('')}
+          className="popup__close popup__close_type_tooltip"
+          type="button"
+        ></button>
+        <img
+          className="popup__tooltip-image"
+          src={registerStatus === 'success' ? checkMark : closeCross}
+          alt={registerStatus === 'success' ? 'Галочка' : 'Крестик закрытия'}
+        />
+        {
+          <p className="popup__tooltip-message">
+            {registerStatus === 'success'
+              ? 'Вы успешно зарегистрировались!'
+              : 'Что-то пошло не так! Попробуйте еще раз!'}
+          </p>
+        }
+      </div>
+    </div>
+  );
+};
 
-    const img = isRegisered ? ok : err;
-
-    return (
-        <div className={`popup ${isOpen && 'popup_visible'}`}>
-            <div className="popup__window popup__window-place">
-                <div className="popup__wrapper">
-                    <img className="popup__img" src={img} alt={InfoTooltip ? 'Ошибка' : 'Успешно'} />
-                    <p className="popup__message">{isRegisered ? 'Вы успешно зарегистрировались!' : 'Что-то пошло не так. \n Попробуйте еще раз'}</p>
-                </div>
-                <button type="button" className="popup__close-button" onClick={onClose}></button>
-            </div>
-        </div>
-    );
-}
-
-export default InfoTooltip;
+export default InfoToolTip;

@@ -1,21 +1,21 @@
-import React from 'react';
+function ImagePopup(props) {
+  const { onClose, card } = props;
 
-function ImagePopup({ card, onClose }) {
+  const classList = `popup popup_image ${card ? 'popup_opened' : ''}`;
 
-    function handleOverlayClick(evt) {
-        if (evt.target === evt.currentTarget) { onClose() };
-    }
-
-    return (
-        // формочка увеличения карточки
-        <div className={`popup popup_place_photos` + (card !== null && ' popup_visible')} onClick={handleOverlayClick}>
-            <figure className="figure">
-                <img className="popup__image" src={card?.link} alt={card?.name} />
-                <figcaption className="popup__image-subtitle">{card?.name}</figcaption>
-                <button className="popup__close-button" id="image-viewer_close-button" type="button" onClick={onClose}></button>
-            </figure>
-        </div>
-    );
+  return (
+    <div className={classList}>
+      <div className="popup__container-image">
+        <button
+          onClick={onClose}
+          className="popup__close popup__close_type_image"
+          type="button"
+        ></button>
+        <img className="popup__image" src={card?.link} alt={card?.name} />
+        <p className="popup__fig">{card?.name}</p>
+      </div>
+    </div>
+  );
 }
 
 export default ImagePopup;
