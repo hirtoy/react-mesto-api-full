@@ -11,18 +11,13 @@ export function register(email, password) {
         },
         body: JSON.stringify({ email, password })
     })
-        .then((res) => {
-            if (res.status === 400) {
-                throw new Error('Bad response from server');
-            }
-            if (res.status === 409) {
-                throw new Error('Такой пользователь уже существует');
-            }
-            return res.json();
+        .then((response) => {
+            return response.json();
         })
         .then((res) => {
             return res;
-        });
+        })
+        .catch((err) => console.log(err));
 };
 
 export function authorize(email, password) {
@@ -33,15 +28,10 @@ export function authorize(email, password) {
         },
         body: JSON.stringify({ email, password })
     })
-        .then((response) => response.json())
-        .then((res) => {
-            if (res) {
-                console.log('token', res.data)
-                localStorage.setItem('jwt', res.data);
-                return res.data;
-            }
-        });
+        .then((response => response.json()))
+        .catch(err => console.log(err))
 };
+
 
 export function checkToken(token) {
     return fetch(
