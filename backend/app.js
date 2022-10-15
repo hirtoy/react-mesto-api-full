@@ -7,7 +7,7 @@ const bodyParser = require('body-parser');
 const cors = require('./middelewares/cors');
 const routerUser = require('./routes/users');
 const routerCards = require('./routes/cards');
-const NotFoundError = require('./error/not-found-errors');
+// const NotFoundError = require('./error/not-found-errors');
 const { requestLogger, errorLogger } = require('./middelewares/Logger');
 const errorHandler = require('./middelewares/error-handler');
 
@@ -37,7 +37,13 @@ app.use(requestLogger);
 
 app.use(routerUser);
 app.use(routerCards);
-app.use((req, res, next) => next(new NotFoundError(errors.ERROR_BAD_REQUEST)));
+
+app.use((err, req, res) => {
+  res.locals.error = err;
+  const status = err.status || 500;
+  res.status(status);
+  res.render('error');
+});
 
 app.use(errors());
 app.use(errorLogger);

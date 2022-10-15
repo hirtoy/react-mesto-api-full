@@ -27,7 +27,7 @@ function App() {
   const [currentUser, setCurrentUser] = React.useState({});
   const [cards, setCards] = React.useState([]);
   const [email, setEmail] = React.useState('');
-  const [isRegistered, setIsRegistered] = React.useState(null);
+  const [isRegistered, setIsRegistered] = React.useState(false);
 
   const handleEditProfileClick = () => { setIsEditProfilePopupOpen(true); }
   const handleAddPlaceClick = () => { setIsAddPlacePopupOpen(true); }
@@ -44,16 +44,16 @@ function App() {
         if (data) {
           setEmail(data.email);
           setLoggedIn(true);
-          history.push("/main");
+          history.push('/main');
         } else {
-          console.log("error");
+          console.log('error');
         }
       });
     }
   }, [history, isLoggedIn]);
 
   React.useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem('token');
     if (token) {
       Api
         .getProfile(token)
@@ -68,7 +68,7 @@ function App() {
   }, [isLoggedIn]);
 
   React.useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem('token');
     if (token) {
       Api
         .getInitialCards(token)
@@ -166,7 +166,7 @@ function App() {
       if (res) {
         setLoggedIn(true);
         setEmail(email);
-        history.push("/");
+        history.push('/');
       } else {
         setIsRegistered(false);
         setIsInfoTooltipOpen(true);
