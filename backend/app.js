@@ -17,7 +17,12 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
   autoIndex: true,
 });
-app.use(cors);
+app.use(
+  cors({
+    origin: ['https://chirick.nomoredomains.icu', 'https://api.chirick.nomoredomains.icu'],
+    credentials: true,
+  }),
+);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
