@@ -10,7 +10,7 @@ function Register(onRegister) {
 
     function handleSubmit(event) {
         event.preventDefault();
-        onRegister(email, password);
+        onRegister({ email, password });
     }
 
     return (

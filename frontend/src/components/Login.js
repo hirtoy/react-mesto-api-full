@@ -9,7 +9,7 @@ function LogIn(onAuthorise) {
 
     function handleAuthorize(event) {
         event.preventDefault();
-        onAuthorise(email, password);
+        onAuthorise({ email, password });
     }
 
     return (
