@@ -116,7 +116,7 @@ function App() {
   function handleRegister(email, password) {
     Auth.register(email, password)
       .then((res) => {
-        setIsRegistered(true);
+        setLoggedIn(true);
         handleInfoTolltipOpen(true);
       })
       .catch(err => {
