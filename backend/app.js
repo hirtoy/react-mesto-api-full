@@ -12,7 +12,7 @@ const NotFoundError = require('./error/not-found-errors');
 const { requestLogger, errorLogger } = require('./middelewares/Logger');
 const errorHandler = require('./middelewares/error-handler');
 const cors = require('./middelewares/cors');
-// const auth = require('./middelewares/auth');
+const auth = require('./middelewares/auth');
 
 const { PORT = 3000 } = process.env;
 
@@ -62,6 +62,8 @@ app.post('/signup', celebrate({
   })
     .unknown(true),
 }), createUser);
+
+app.use(auth);
 
 app.use(errors());
 app.use(errorLogger);
