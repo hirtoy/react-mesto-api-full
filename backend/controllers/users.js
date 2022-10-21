@@ -4,19 +4,18 @@ const jwt = require('jsonwebtoken');
 
 const User = require('../models/user');
 
-const { CREATED_CODE } = require('../utils/constants');
+const { STATUS_CREATED } = require('../utils/constants');
 
-const BadRequestError = require('../errors/bad-request-error');
-const UnauthorizedError = require('../errors/unauthorized-error');
-const NotFoundError = require('../errors/not-found-error');
-const ConflictError = require('../errors/conflict-error');
+const BadRequestError = require('../errors/bad-request-errors');
+const UnauthorizedError = require('../errors/unauthorized-errors');
+const NotFoundError = require('../errors/not-found-errors');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
-const getUserById = async (req, res, next) => {
+const getUserById = (req, res, next) => {
   const { id } = req.params;
   try {
-    const user = await User.findById(id);
+    const user = User.findById(id);
     if (!user) {
       next(new NotFoundError('Пользователь по указанному id не найден'));
       return;
@@ -31,25 +30,25 @@ const getUserById = async (req, res, next) => {
   }
 };
 
-const getUsers = async (req, res, next) => {
+const getUsers = (req, res, next) => {
   try {
-    const users = await User.find({});
+    const users = User.find({});
     res.send(users);
   } catch (err) {
     next(err);
   }
 };
 
-const createUser = async (req, res, next) => {
+const createUser = (req, res, next) => {
   const {
     name, about, avatar, email, password,
   } = req.body;
   try {
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await User.create({
+    const hashedPassword = bcrypt.hash(password, 10);
+    const user = User.create({
       name, about, avatar, email, password: hashedPassword,
     });
-    res.status(CREATED_CODE).send({
+    res.status(STATUS_CREATED).send({
       data: user.toJSON(),
     });
   } catch (err) {
@@ -58,17 +57,17 @@ const createUser = async (req, res, next) => {
       return;
     }
     if (err.code === 11000) {
-      next(new ConflictError('Пользователь с таким email уже существует'));
+      next(new NotFoundError('Пользователь с таким email уже существует'));
       return;
     }
     next(err);
   }
 };
 
-const updateUserProfile = async (req, res, next) => {
+const updateUserProfile = (req, res, next) => {
   const { name, about } = req.body;
   try {
-    const user = await User.findByIdAndUpdate(
+    const user = User.findByIdAndUpdate(
       req.user._id,
       { name, about },
       { new: true, runValidators: true },
@@ -91,10 +90,10 @@ const updateUserProfile = async (req, res, next) => {
   }
 };
 
-const updateUserAvatar = async (req, res, next) => {
+const updateUserAvatar = (req, res, next) => {
   const { avatar } = req.body;
   try {
-    const user = await User.findByIdAndUpdate(
+    const user = User.findByIdAndUpdate(
       req.user._id,
       { avatar },
       { new: true, runValidators: true },
@@ -117,11 +116,11 @@ const updateUserAvatar = async (req, res, next) => {
   }
 };
 
-const login = async (req, res, next) => {
+const login = (req, res, next) => {
   const { email, password } = req.body;
   try {
-    const user = await User.findUserByCredentials(email, password);
-    const token = await jwt.sign(
+    const user = User.findUserByCredentials(email, password);
+    const token = jwt.sign(
       { _id: user._id },
       NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret-key',
       { expiresIn: '7d' },
@@ -140,9 +139,9 @@ const signOut = (req, res) => {
   }).send();
 };
 
-const getUserInfo = async (req, res, next) => {
+const getUserInfo = (req, res, next) => {
   try {
-    const user = await User.findById({ _id: req.user._id });
+    const user = User.findById({ _id: req.user._id });
     if (!user) {
       next(new NotFoundError('Пользователь по указанному id не найден'));
       return;

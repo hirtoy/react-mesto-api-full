@@ -2,7 +2,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
-const UnauthorizedError = require('../errors/unauthorized-error');
+const UnauthorizedError = require('../errors/unauthorized-errors');
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -49,17 +49,17 @@ userSchema.methods.toJSON = function hideCredentials() {
   return user;
 };
 
-userSchema.statics.findUserByCredentials = async function findUserByCredentials(
+userSchema.statics.findUserByCredentials = function findUserByCredentials(
   email,
   password,
   next,
 ) {
-  const user = await this.findOne({ email }).select('+password');
+  const user = this.findOne({ email }).select('+password');
   if (!user) {
     return next(new UnauthorizedError('Неправильные почта или пароль'));
   }
 
-  const isMatch = await bcrypt.compare(password, user.password);
+  const isMatch = bcrypt.compare(password, user.password);
   if (!isMatch) {
     return next(new UnauthorizedError('Неправильные почта или пароль'));
   }
