@@ -12,7 +12,7 @@ const NotFoundError = require('../errors/not-found-errors');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
-const getUserById = (req, res, next) => {
+module.exports.getUserById = (req, res, next) => {
   const { id } = req.params;
   try {
     const user = User.findById(id);
@@ -30,7 +30,7 @@ const getUserById = (req, res, next) => {
   }
 };
 
-const getUsers = (req, res, next) => {
+module.exports.getUsers = (req, res, next) => {
   try {
     const users = User.find({});
     res.send(users);
@@ -39,7 +39,7 @@ const getUsers = (req, res, next) => {
   }
 };
 
-const createUser = (req, res, next) => {
+module.exports.createUser = (req, res, next) => {
   const {
     name, about, avatar, email, password,
   } = req.body;
@@ -64,7 +64,7 @@ const createUser = (req, res, next) => {
   }
 };
 
-const updateUserProfile = (req, res, next) => {
+module.exports.updateUserProfile = (req, res, next) => {
   const { name, about } = req.body;
   try {
     const user = User.findByIdAndUpdate(
@@ -90,7 +90,7 @@ const updateUserProfile = (req, res, next) => {
   }
 };
 
-const updateUserAvatar = (req, res, next) => {
+module.exports.updateUserAvatar = (req, res, next) => {
   const { avatar } = req.body;
   try {
     const user = User.findByIdAndUpdate(
@@ -116,7 +116,7 @@ const updateUserAvatar = (req, res, next) => {
   }
 };
 
-const login = (req, res, next) => {
+module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
   try {
     const user = User.findUserByCredentials(email, password);
@@ -134,12 +134,12 @@ const login = (req, res, next) => {
   }
 };
 
-const signOut = (req, res) => {
+module.exports.signOut = (req, res) => {
   res.clearCookie('jwt', {
   }).send();
 };
 
-const getUserInfo = (req, res, next) => {
+module.exports.getUserInfo = (req, res, next) => {
   try {
     const user = User.findById({ _id: req.user._id });
     if (!user) {
@@ -154,15 +154,4 @@ const getUserInfo = (req, res, next) => {
     }
     next(err);
   }
-};
-
-module.exports = {
-  getUserById,
-  getUsers,
-  createUser,
-  updateUserProfile,
-  updateUserAvatar,
-  login,
-  getUserInfo,
-  signOut,
 };

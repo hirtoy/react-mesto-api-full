@@ -8,16 +8,16 @@ const BadRequestError = require('../errors/bad-request-errors');
 const ForbiddenError = require('../errors/forbidden-errors');
 const NotFoundError = require('../errors/not-found-errors');
 
-const getCards = async (req, res, next) => {
+module.exports.getCards = (req, res, next) => {
   try {
-    const cards = await Card.find({});
+    const cards = Card.find({});
     res.send(cards);
   } catch (err) {
     next(err);
   }
 };
 
-const createCard = (req, res, next) => {
+module.exports.createCard = (req, res, next) => {
   const { name, link } = req.body;
   try {
     const card = Card.create({ name, link, owner: req.user._id });
@@ -31,7 +31,7 @@ const createCard = (req, res, next) => {
   }
 };
 
-const deleteCard = (req, res, next) => {
+module.exports.deleteCard = (req, res, next) => {
   try {
     const card = Card.findById({ _id: req.params.cardId });
     if (!card) {
@@ -53,7 +53,7 @@ const deleteCard = (req, res, next) => {
   }
 };
 
-const likeCard = (req, res, next) => {
+module.exports.likeCard = (req, res, next) => {
   try {
     const card = Card.findByIdAndUpdate(
       req.params.cardId,
@@ -74,7 +74,7 @@ const likeCard = (req, res, next) => {
   }
 };
 
-const dislikeCard = (req, res, next) => {
+module.exports.dislikeCard = (req, res, next) => {
   try {
     const card = Card.findByIdAndUpdate(
       req.params.cardId,
@@ -93,12 +93,4 @@ const dislikeCard = (req, res, next) => {
     }
     next(err);
   }
-};
-
-module.exports = {
-  getCards,
-  createCard,
-  deleteCard,
-  likeCard,
-  dislikeCard,
 };
